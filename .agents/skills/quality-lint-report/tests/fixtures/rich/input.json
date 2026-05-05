@@ -1,0 +1,283 @@
+{
+  "version": "0.7.0",
+  "root": "/test/project",
+  "languages": [],
+  "rules": {
+    "complexity.cyclomatic": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "complexity.cyclomatic",
+          "file": "src/pipeline.py",
+          "line": 10,
+          "symbol": "run_pipeline",
+          "message": "CCX 15 exceeds 10",
+          "severity": "error",
+          "value": 15,
+          "threshold": 10,
+          "metadata": {"zone": "moderate", "cog": 20, "end_line": 80}
+        },
+        {
+          "rule": "complexity.cyclomatic",
+          "file": "src/utils.py",
+          "line": 5,
+          "symbol": "parse_config",
+          "message": "CCX 12 exceeds 10",
+          "severity": "error",
+          "value": 12,
+          "threshold": 10,
+          "metadata": {"zone": "moderate", "cog": 14, "end_line": 50}
+        }
+      ],
+      "summary": {"functions_checked": 200, "violation_count": 2},
+      "errors": []
+    },
+    "complexity.cognitive": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "complexity.cognitive",
+          "file": "src/pipeline.py",
+          "line": 10,
+          "symbol": "run_pipeline",
+          "message": "CogC 22 exceeds 15",
+          "severity": "error",
+          "value": 22,
+          "threshold": 15,
+          "metadata": {"zone": "moderate", "ccx": 15, "end_line": 80}
+        }
+      ],
+      "summary": {"functions_checked": 200, "violation_count": 1},
+      "errors": []
+    },
+    "complexity.weighted": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "complexity.weighted",
+          "file": "src/pipeline.py",
+          "line": 1,
+          "symbol": "Pipeline",
+          "message": "WMC 55 exceeds 40",
+          "severity": "error",
+          "value": 55,
+          "threshold": 40,
+          "metadata": {"kind": "class", "method_count": 10, "cbo": 2}
+        },
+        {
+          "rule": "complexity.weighted",
+          "file": "src/evaluator.py",
+          "line": 1,
+          "symbol": "Evaluator",
+          "message": "WMC 42 exceeds 40",
+          "severity": "error",
+          "value": 42,
+          "threshold": 40,
+          "metadata": {"kind": "class", "method_count": 8, "cbo": 1}
+        }
+      ],
+      "summary": {"classes_checked": 50, "violation_count": 2},
+      "errors": []
+    },
+    "halstead.volume": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "halstead.volume",
+          "file": "src/pipeline.py",
+          "line": 10,
+          "symbol": "run_pipeline",
+          "message": "Volume 3000 exceeds 1500",
+          "severity": "error",
+          "value": 3000.0,
+          "threshold": 1500,
+          "metadata": {"difficulty": 20.0, "effort": 60000.0, "vocabulary": 100, "length": 300, "end_line": 80}
+        },
+        {
+          "rule": "halstead.volume",
+          "file": "src/utils.py",
+          "line": 5,
+          "symbol": "parse_config",
+          "message": "Volume 1800 exceeds 1500",
+          "severity": "error",
+          "value": 1800.0,
+          "threshold": 1500,
+          "metadata": {"difficulty": 15.0, "effort": 27000.0, "vocabulary": 80, "length": 200, "end_line": 50}
+        }
+      ],
+      "summary": {"functions_checked": 180, "violation_count": 2},
+      "errors": []
+    },
+    "halstead.difficulty": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "halstead.difficulty",
+          "file": "src/utils.py",
+          "line": 5,
+          "symbol": "parse_config",
+          "message": "Difficulty 35.5 exceeds 30",
+          "severity": "error",
+          "value": 35.5,
+          "threshold": 30,
+          "metadata": {"volume": 1800.0, "effort": 63900.0, "vocabulary": 80, "length": 200, "end_line": 50}
+        }
+      ],
+      "summary": {"functions_checked": 180, "violation_count": 1},
+      "errors": []
+    },
+    "npath": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "npath",
+          "file": "src/pipeline.py",
+          "line": 10,
+          "symbol": "run_pipeline",
+          "message": "NPath 500 exceeds 400",
+          "severity": "error",
+          "value": 500,
+          "threshold": 400,
+          "metadata": {"end_line": 80, "language": "python"}
+        }
+      ],
+      "summary": {"functions_checked": 180, "violation_count": 1},
+      "errors": []
+    },
+    "hotspots": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "hotspots",
+          "file": "src/pipeline.py",
+          "line": null,
+          "symbol": null,
+          "message": "hotspot (CCX=200, growth=+500 LOC, score=100000)",
+          "severity": "error",
+          "value": 100000.0,
+          "threshold": null,
+          "metadata": {"quadrant": "hotspot", "sum_ccx": 200, "loc_delta": 500, "commit_count": 5, "last_seen": "2026-04-28"}
+        },
+        {
+          "rule": "hotspots",
+          "file": "src/evaluator.py",
+          "line": null,
+          "symbol": null,
+          "message": "hotspot (CCX=80, growth=+200 LOC, score=16000)",
+          "severity": "error",
+          "value": 16000.0,
+          "threshold": null,
+          "metadata": {"quadrant": "hotspot", "sum_ccx": 80, "loc_delta": 200, "commit_count": 3, "last_seen": "2026-04-29"}
+        }
+      ],
+      "summary": {
+        "files_analyzed": 30,
+        "total_commits": 20,
+        "window_since": "7 days ago",
+        "quadrant_counts": {"hotspot": 2, "stable_complex": 5, "churning_simple": 3, "calm": 20, "insufficient_data": 0},
+        "violation_count": 2
+      },
+      "errors": []
+    },
+    "packages": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "packages",
+          "file": "src/core",
+          "line": null,
+          "symbol": null,
+          "message": "Zone of Pain (I=0.20, A=0.10)",
+          "severity": "warning",
+          "value": 0.70,
+          "threshold": 0.7,
+          "metadata": {"zone": "pain", "instability": 0.20, "abstractness": 0.10, "ca": 5, "ce": 1, "language": "python"}
+        },
+        {
+          "rule": "packages",
+          "file": "src/utils",
+          "line": null,
+          "symbol": null,
+          "message": "Zone of Pain (I=0.15, A=0.20)",
+          "severity": "warning",
+          "value": 0.65,
+          "threshold": 0.7,
+          "metadata": {"zone": "pain", "instability": 0.15, "abstractness": 0.20, "ca": 8, "ce": 1, "language": "python"}
+        }
+      ],
+      "summary": {"packages_analyzed": 15, "violation_count": 2},
+      "errors": []
+    },
+    "deps": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "deps",
+          "file": "/test/project/src/pipeline.py",
+          "line": null,
+          "symbol": null,
+          "message": "cycle: pipeline.py → pipeline_execution.py",
+          "severity": "error",
+          "value": 2,
+          "threshold": 0,
+          "metadata": {
+            "cycle": [
+              "/test/project/src/pipeline.py",
+              "/test/project/src/pipeline_execution.py"
+            ]
+          }
+        },
+        {
+          "rule": "deps",
+          "file": "/test/project/src/services.py",
+          "line": null,
+          "symbol": null,
+          "message": "cycle: services.py → preflight.py → runner.py",
+          "severity": "error",
+          "value": 3,
+          "threshold": 0,
+          "metadata": {
+            "cycle": [
+              "/test/project/src/services.py",
+              "/test/project/src/preflight.py",
+              "/test/project/src/runner.py"
+            ]
+          }
+        }
+      ],
+      "summary": {"files_analyzed": 100, "cycles_found": 2, "violation_count": 2},
+      "errors": []
+    },
+    "orphans": {
+      "status": "skip",
+      "violations": [],
+      "summary": {},
+      "errors": []
+    },
+    "class.coupling": {
+      "status": "pass",
+      "violations": [],
+      "summary": {"classes_checked": 50, "violation_count": 0},
+      "errors": []
+    },
+    "class.inheritance.depth": {
+      "status": "pass",
+      "violations": [],
+      "summary": {"classes_checked": 50, "violation_count": 0},
+      "errors": []
+    },
+    "class.inheritance.children": {
+      "status": "pass",
+      "violations": [],
+      "summary": {"classes_checked": 50, "violation_count": 0},
+      "errors": []
+    }
+  },
+  "summary": {
+    "rules_checked": 12,
+    "rules_skipped": 1,
+    "violation_count": 13,
+    "advisory_count": 2,
+    "result": "fail"
+  }
+}

@@ -1,0 +1,16 @@
+# Shellcheck configuration for warp-tools
+# Run with: shellcheck -x <file> or via CI with bats-run
+
+# SC1090/SC1091: Sourced files are resolved via WARP_TOOLS_ROOT at runtime.
+# Shellcheck cannot follow dynamic or non-constant sources; we suppress the noise.
+disable=SC1090
+disable=SC1091
+
+# SC2015: A && B || C is used intentionally for compact error fallbacks
+# in bin/warp-tools subcommand dispatch where B always succeeds or exits.
+disable=SC2015
+
+# SC2034: Variables defined in shared helpers (flags.sh, paths.sh, common.sh)
+# are consumed by scripts that source them. Shellcheck sees them as unused
+# when checking the individual file.
+disable=SC2034

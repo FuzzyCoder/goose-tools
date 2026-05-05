@@ -1,0 +1,43 @@
+[project]
+name = "warp-tools"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "tomli-w>=1.0.0",
+    "agent-slop-lint>=0.8.0",
+]
+
+[tool.uv.workspace]
+members = ["."]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "ty",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B"]
+
+[tool.ty.environment]
+python-version = "3.13"
+extra-paths = [".agents/skills/quality-lint-report/scripts"]
+
+[tool.ty.src]
+include = [".agents/skills/quality-lint-report/tests"]
+
+[tool.pytest.ini_options]
+markers = ["unit", "integration", "slow"]
+testpaths = [".agents/skills/quality-lint-report/tests"]
+pythonpath = [".agents/skills/quality-lint-report/scripts"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

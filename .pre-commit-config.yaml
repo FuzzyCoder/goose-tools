@@ -1,0 +1,48 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.0
+    hooks:
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty check (type checker)
+        entry: uv run ty check
+        language: system
+        types: [python]
+        pass_filenames: true
+        require_serial: true
+
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.10.0
+    hooks:
+      - id: shellcheck
+        args: ["-x"]
+        files: \.(sh|bash)$
+        exclude: tests/bats/
+
+  - repo: local
+    hooks:
+      - id: bats-tests
+        name: bats tests
+        entry: bats
+        args: ["tests/bats/"]
+        language: system
+        files: \.(sh|bash|bats)$
+        pass_filenames: false
+        always_run: false
+        stages: [pre-push]
+
+  - repo: local
+    hooks:
+      - id: quality-lint
+        name: quality lint (optional)
+        entry: ./.agents/skills/quality-lint-report/scripts/generate_report.sh
+        args: ["--root", "."]
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]

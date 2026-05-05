@@ -1,0 +1,64 @@
+{
+  "version": "0.6.1",
+  "root": "/test/project",
+  "languages": [],
+  "rules": {
+    "complexity.cyclomatic": {
+      "status": "pass",
+      "violations": [],
+      "summary": {
+        "functions_checked": 50,
+        "violation_count": 0
+      },
+      "errors": []
+    },
+    "orphans": {
+      "status": "fail",
+      "violations": [
+        {
+          "rule": "orphans",
+          "file": "anonymous/extract.py",
+          "line": 42,
+          "symbol": "extract_pii_features",
+          "message": "0 references (high confidence)",
+          "severity": "warning",
+          "value": 0,
+          "threshold": 0,
+          "metadata": {
+            "symbol_type": "function",
+            "confidence": "high",
+            "caveats": []
+          }
+        },
+        {
+          "rule": "orphans",
+          "file": "anonymous/utils.py",
+          "line": 17,
+          "symbol": "format_note_id",
+          "message": "0 references (high confidence)",
+          "severity": "warning",
+          "value": 0,
+          "threshold": 0,
+          "metadata": {
+            "symbol_type": "function",
+            "confidence": "high",
+            "caveats": []
+          }
+        }
+      ],
+      "summary": {
+        "symbols_analyzed": 250,
+        "candidates_found": 2,
+        "violation_count": 2
+      },
+      "errors": []
+    }
+  },
+  "summary": {
+    "rules_checked": 2,
+    "rules_skipped": 0,
+    "violation_count": 0,
+    "advisory_count": 2,
+    "result": "fail"
+  }
+}

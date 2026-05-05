@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  python-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      - name: Ty type check
+        run: uv run ty check .
+
+      - name: Run Python tests
+        run: uv run pytest
+
+  shell-quality:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shell test dependencies
+        run: ./scripts/install_shell_dev.sh
+
+      - name: Shellcheck all shell scripts
+        run: |
+          for f in bin/warp-tools utils/shell/*.sh bin/commands/*.sh warp/workflows/scripts/*.sh; do
+            shellcheck -x "$f"
+          done
+
+      - name: Run bats test suite
+        run: bats tests/bats/
+
+      - name: Run shell compat fixture
+        run: bash tests/shell_compat/run_compat.sh
+
+      - name: Run negative rule test
+        run: bash tests/test_oz_pw_plan_negative_rule.sh
+
+  quality-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Generate quality report
+        run: |
+          ./.agents/skills/quality-lint-report/scripts/generate_report.sh --root .
+          ls -la .slop/

@@ -1,0 +1,26 @@
+{
+  "version": "0.7.0",
+  "root": "/test/project",
+  "languages": [],
+  "rules": {
+    "class.coupling": {
+      "status": "pass",
+      "violations": [],
+      "summary": {"classes_checked": 50, "violation_count": 0},
+      "errors": []
+    },
+    "class.inheritance.depth": {
+      "status": "pass",
+      "violations": [],
+      "summary": {"classes_checked": 50, "violation_count": 0},
+      "errors": []
+    }
+  },
+  "summary": {
+    "rules_checked": 2,
+    "rules_skipped": 0,
+    "violation_count": 0,
+    "advisory_count": 0,
+    "result": "pass"
+  }
+}
