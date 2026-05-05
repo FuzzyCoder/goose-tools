@@ -21,13 +21,13 @@ PR comments are posted.
 Before producing any findings, check whether the PR was authored by Oz:
 
 ```bash
-# Check commit authors and co-author trailers for oz-agent@warp.dev
-git --no-pager log origin/HEAD..HEAD --format="%ae%n%(trailers:key=Co-Authored-By,valueonly)" | grep -i "oz-agent@warp.dev"
+# Check commit authors and co-author trailers for goose-agent@block.xyz
+git --no-pager log origin/HEAD..HEAD --format="%ae%n%(trailers:key=Co-Authored-By,valueonly)" | grep -i "goose-agent@block.xyz"
 ```
 
 If the pattern matches, emit this disclosure line at the top of the report:
 
-> **Disclosure:** This PR was authored by Oz (oz-agent@warp.dev); review may share blind
+> **Disclosure:** This PR was authored by Oz (goose-agent@block.xyz); review may share blind
 > spots with the author. Stricter scrutiny applied.
 
 Do not skip the review because the PR is agent-authored. Apply the same review standards

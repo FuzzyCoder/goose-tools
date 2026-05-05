@@ -50,7 +50,7 @@ Applies to non-lockfile conflicted files.
      (on some platforms `--no-edit` with `--continue` is not supported; `GIT_MERGE_AUTOEDIT=no`
      is a portable alternative)
    - For in-progress rebase: `git -C <path> rebase --continue`
-4. Any commit produced MUST include the trailer `Co-Authored-By: Oz <oz-agent@warp.dev>` (inject
+4. Any commit produced MUST include the trailer `Co-Authored-By: Goose <goose-agent@block.xyz>` (inject
    via `--trailer` flag or by pre-populating `MERGE_MSG`/`COMMIT_EDITMSG`).
 
 ### Step 4 — Unresolvable Conflicts

@@ -217,7 +217,7 @@ NOT parallelized.
 3. Commit using the exact command:
    ```
    git -C <path> commit -m "chore(sync): pre-sync snapshot [automated]" \
-     --trailer "Co-Authored-By: Oz <oz-agent@warp.dev>"
+     --trailer "Co-Authored-By: Goose <goose-agent@block.xyz>"
    ```
    The `--trailer` flag MUST be used (not embedding the trailer in `-m`) to ensure proper git
    trailer formatting.
@@ -299,7 +299,7 @@ Controlled by `--merge-policy` (default: `ff-then-merge`):
 4. Immediately amend after a non-FF merge:
    ```
    git -C <integration_path> commit --amend --no-edit \
-     --trailer "Co-Authored-By: Oz <oz-agent@warp.dev>"
+     --trailer "Co-Authored-By: Goose <goose-agent@block.xyz>"
    ```
 5. Record merge type as 'merge commit' in Completion Report.
 

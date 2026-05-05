@@ -1,0 +1,270 @@
+{
+  "models": [
+    {
+      "id": "auto",
+      "provider": "Oz (internal)",
+      "access": "routing",
+      "notes": "Router/selector entry, not model weights"
+    },
+    {
+      "id": "auto-efficient",
+      "provider": "Oz (internal)",
+      "access": "routing",
+      "notes": "Router/selector entry, not model weights"
+    },
+    {
+      "id": "auto-genius",
+      "provider": "Oz (internal)",
+      "access": "routing",
+      "notes": "Router/selector entry, not model weights"
+    },
+    {
+      "id": "auto-open",
+      "provider": "Oz (internal)",
+      "access": "routing",
+      "notes": "Router/selector entry, not model weights"
+    },
+    {
+      "id": "claude-4-5-haiku",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "claude-4-5-opus",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "claude-4-5-opus-thinking",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": "Extended reasoning mode"
+    },
+    {
+      "id": "claude-4-5-sonnet",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "claude-4-5-sonnet-thinking",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": "Extended reasoning mode"
+    },
+    {
+      "id": "claude-4-6-opus-high",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "claude-4-6-opus-max",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "claude-4-6-sonnet-high",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "claude-4-6-sonnet-max",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "claude-4-7-opus-high",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "claude-4-7-opus-max",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "claude-4-7-opus-xhigh",
+      "provider": "Anthropic",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gemini-3.1-pro",
+      "provider": "Google",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "glm-5-fireworks",
+      "provider": "Zhipu AI (via Fireworks)",
+      "access": "open",
+      "notes": "Apache 2.0 open weights (GitHub repo LICENSE); HuggingFace card says MIT — Apache 2.0 treated as canonical because the source repository's LICENSE file is the primary distribution license."
+    },
+    {
+      "id": "glm-5.1-fireworks",
+      "provider": "Zhipu AI (via Fireworks)",
+      "access": "open",
+      "notes": "Apache 2.0 open weights; newer successor to GLM-5 with stronger coding benchmarks; not yet assigned to a workflow profile"
+    },
+    {
+      "id": "gpt-5-2-codex-high",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-2-codex-low",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-2-codex-medium",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-2-codex-xhigh",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-2-high",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-2-low",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-2-medium",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-2-xhigh",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-3-codex-high",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-3-codex-low",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-3-codex-medium",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-3-codex-xhigh",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-4-high",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-4-low",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-4-medium",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-4-xhigh",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-5-high",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-5-low",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-5-medium",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "gpt-5-5-xhigh",
+      "provider": "OpenAI",
+      "access": "closed",
+      "notes": ""
+    },
+    {
+      "id": "kimi-k25-fireworks",
+      "provider": "Moonshot AI (via Fireworks)",
+      "access": "open-conditional",
+      "notes": "Modified MIT open weights (attribution required above 100M MAU / $20M/mo revenue)"
+    },
+    {
+      "id": "kimi-k26-fireworks",
+      "provider": "Moonshot AI (via Fireworks)",
+      "access": "open-conditional",
+      "notes": "Modified MIT open weights (attribution required above 100M MAU / $20M/mo revenue)"
+    },
+    {
+      "id": "minimax-2.7-fireworks",
+      "provider": "MiniMax (via Fireworks)",
+      "access": "open",
+      "notes": "MoE architecture, 10B active params"
+    },
+    {
+      "id": "qwen-3.6-plus-fireworks",
+      "provider": "Alibaba Qwen (via Fireworks)",
+      "access": "open",
+      "notes": "Apache 2.0 open weights"
+    }
+  ],
+  "metadata": {
+    "total_count": 43,
+"last_updated": "2026-05-04T00:35:18Z",
+"schema_version": "1.0",
+    "schema_note": "Baseline properties: id, provider, access, notes. Additional per-model properties may be fetched or injected by the model at runtime on a per-prompt basis; they are not persisted to this file.",
+    "cli_command": "oz-preview model list --output-format json",
+    "staleness_note": "This catalog is a point-in-time snapshot. Re-verify with the CLI and diff IDs. If the count differs, or IDs are missing/new, update this file."
+  }
+}

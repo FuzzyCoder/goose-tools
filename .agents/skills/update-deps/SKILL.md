@@ -30,7 +30,7 @@ Then stop without changing any files.
 Commit and push are **only authorized** when the user invokes this skill via one of its
 explicit trigger phrases.
 
-All commits must include `Co-Authored-By: Oz <oz-agent@warp.dev>` in a new line at the
+All commits must include `Co-Authored-By: Goose <goose-agent@block.xyz>` in a new line at the
 end of the commit message.
 
 ---
@@ -153,7 +153,7 @@ Updated via uv lock --upgrade. pip-audit: clean. Tests: passing.
 Notable changes:
 <list key version bumps if visible from uv.lock diff>
 
-Co-Authored-By: Oz <oz-agent@warp.dev>"
+Co-Authored-By: Goose <goose-agent@block.xyz>"
 ```
 
 Push to the current branch:

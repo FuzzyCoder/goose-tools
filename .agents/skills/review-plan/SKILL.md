@@ -117,16 +117,16 @@ Report findings in this exact format. Do not deviate from the section numbering.
 
 ## Step 3b — Persist the report (when running in a slot context)
 
-If the review was launched via `oz_pw_review.sh` (i.e., the prompt contains a
+If the review was launched via `goose_pw_review.sh` (i.e., the prompt contains a
 `REVIEW REPORT PERSISTENCE CONTRACT` block with a file path), you MUST write the
 full Section 0–6 report verbatim to the specified path before ending your turn.
 
-This is the handoff mechanism used by `oz_pw_edit.sh` / `oz_pw_finalize.sh` — the
+This is the handoff mechanism used by `goose_pw_edit.sh` / `goose_pw_finalize.sh` — the
 next step's agent reads the file rather than reconstructing the review from context.
 
 ```bash
-# The path is injected by oz_pw_review.sh, e.g.:
-# ~/.warp/state/plan_workflow/<slot>/review_report.md
+# The path is injected by goose_pw_review.sh, e.g.:
+# ~/.goose/state/plan_workflow/<slot>/review_report.md
 ```
 
 Use `create_file` or `run_shell_command` to write it. Overwrite any prior contents.
@@ -231,7 +231,7 @@ User: Run another review pass.
 ## Integration with Plan → Execute Workflow
 
 The `plan-workflow` skill orchestrates the full Plan→Review→Edit→Approve→Finalize→Execute
-cycle using `oz_pw_review.sh`. When launched through that workflow:
+cycle using `goose_pw_review.sh`. When launched through that workflow:
 - The prompt already specifies the plan ID, repo CWD, and persistence file path
 - Use the prompt as the authoritative source for those values
 - Complete Steps 1–3b as specified above before ending your turn
