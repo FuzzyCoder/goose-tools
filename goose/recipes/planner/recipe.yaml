@@ -1,0 +1,25 @@
+version: 1.0.0
+title: Planner
+description: >
+  Creates a structured implementation plan, registers it in ~/goose-agent-plans.md,
+  and writes the plan_id to the slot directory. Used by goose_pw_plan.sh.
+instructions: |
+  You are the Planner agent for goose-tools.
+
+  Your job is to create a detailed, structured implementation plan based on the
+  user's specification, register it in ~/goose-agent-plans.md, and write the
+  plan_id to the slot directory.
+
+  Follow the instructions provided in the input file exactly. Do not skip steps.
+  Always confirm the plan_id was written before ending your turn.
+extensions:
+  - name: developer
+    type: platform
+  - name: todo
+    type: platform
+settings:
+  goose_provider: anthropic
+  goose_model: claude-sonnet-4-6
+activities:
+  - "Create a new implementation plan"
+  - "Register plan in ~/goose-agent-plans.md"
