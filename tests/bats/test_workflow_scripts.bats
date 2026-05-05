@@ -1,10 +1,10 @@
 #!/usr/bin/env bats
 # tests/bats/test_workflow_scripts.bats
-# Tests for oz_pw_*.sh workflow scripts in DRY_RUN=1 mode.
+# Tests for goose_pw_*.sh workflow scripts in DRY_RUN=1 mode.
 
 setup() {
   REPO_ROOT="$(cd "${BATS_TEST_DIRNAME}/../.." && pwd)"
-  SCRIPTS_DIR="${REPO_ROOT}/warp/workflows/scripts"
+  SCRIPTS_DIR="${REPO_ROOT}/goose/workflows/scripts"
   TEST_TMPDIR="$(mktemp -d)"
   export TEST_TMPDIR
 
@@ -16,14 +16,14 @@ setup() {
   FAKE_REPO="$(git rev-parse --show-toplevel)"
   cd "${REPO_ROOT}"
 
-  # Fake HOME with profiles.env
+  # Fake HOME with recipes.env
   FAKE_HOME="${TEST_TMPDIR}/fakehome"
   mkdir -p "${FAKE_HOME}/.warp/state/plan_workflow"
-  cat > "${FAKE_HOME}/.warp/state/plan_workflow/profiles.env" <<'EOF'
-PLANNER_ID=test-planner-id
-REVIEWER_ID=test-reviewer-id
-APPROVER_ID=test-approver-id
-CODER_ID=test-coder-id
+  cat > "${FAKE_HOME}/.warp/state/plan_workflow/recipes.env" <<'EOF'
+PLANNER_RECIPE=test-planner-id
+REVIEWER_RECIPE=test-reviewer-id
+APPROVER_RECIPE=test-approver-id
+CODER_RECIPE=test-coder-id
 EOF
 
   # Fake plan registry
@@ -64,84 +64,84 @@ teardown() {
   rm -rf "${TEST_TMPDIR}"
 }
 
-@test "oz_pw_plan.sh DRY_RUN=1 works under bash" {
+@test "goose_pw_plan.sh DRY_RUN=1 works under bash" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_plan.sh" \
+    run bash "${SCRIPTS_DIR}/goose_pw_plan.sh" \
     "bats-new-slot" "My Plan" "Plan spec"
   [ "$status" -eq 0 ]
   [[ "$output" == *"DRY RUN"* ]]
 }
 
-@test "oz_pw_select.sh DRY_RUN=1 works under bash" {
+@test "goose_pw_select.sh DRY_RUN=1 works under bash" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_select.sh" \
+    run bash "${SCRIPTS_DIR}/goose_pw_select.sh" \
     "bats-select-slot" "aaaabbbb-cccc-dddd-eeee-ffffaaaabbbb"
   [ "$status" -eq 0 ]
   [[ "$output" == *"pinned"* ]] || [[ "$output" == *"DRY"* ]]
 }
 
-@test "oz_pw_review.sh reviewer DRY_RUN=1 works under bash" {
+@test "goose_pw_review.sh reviewer DRY_RUN=1 works under bash" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_review.sh" "bats-test-slot" "reviewer"
+    run bash "${SCRIPTS_DIR}/goose_pw_review.sh" "bats-test-slot" "reviewer"
   [ "$status" -eq 0 ]
   [[ "$output" == *"DRY RUN"* ]]
 }
 
-@test "oz_pw_review.sh approver DRY_RUN=1 works under bash" {
+@test "goose_pw_review.sh approver DRY_RUN=1 works under bash" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_review.sh" "bats-test-slot" "approver"
+    run bash "${SCRIPTS_DIR}/goose_pw_review.sh" "bats-test-slot" "approver"
   [ "$status" -eq 0 ]
   [[ "$output" == *"DRY RUN"* ]]
 }
 
-@test "oz_pw_edit.sh DRY_RUN=1 works under bash" {
+@test "goose_pw_edit.sh DRY_RUN=1 works under bash" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_edit.sh" "bats-test-slot"
+    run bash "${SCRIPTS_DIR}/goose_pw_edit.sh" "bats-test-slot"
   [ "$status" -eq 0 ]
   [[ "$output" == *"DRY RUN"* ]]
 }
 
-@test "oz_pw_finalize.sh DRY_RUN=1 works under bash" {
+@test "goose_pw_finalize.sh DRY_RUN=1 works under bash" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_finalize.sh" "bats-test-slot"
+    run bash "${SCRIPTS_DIR}/goose_pw_finalize.sh" "bats-test-slot"
   [ "$status" -eq 0 ]
   [[ "$output" == *"DRY RUN"* ]]
 }
 
-@test "oz_pw_execute.sh DRY_RUN=1 works under bash" {
+@test "goose_pw_execute.sh DRY_RUN=1 works under bash" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_execute.sh" "bats-test-slot"
+    run bash "${SCRIPTS_DIR}/goose_pw_execute.sh" "bats-test-slot"
   [ "$status" -eq 0 ]
   [[ "$output" == *"DRY RUN"* ]]
 }
 
-@test "oz_pw_plan.sh rejects invalid slot names" {
+@test "goose_pw_plan.sh rejects invalid slot names" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_plan.sh" "UPPER" "Plan" "Spec"
+    run bash "${SCRIPTS_DIR}/goose_pw_plan.sh" "UPPER" "Plan" "Spec"
   [ "$status" -eq 1 ]
   [[ "$output" == *"invalid slot name"* ]]
 }
 
-@test "oz_pw_select.sh rejects invalid UUID" {
+@test "goose_pw_select.sh rejects invalid UUID" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_select.sh" "slot" "not-a-uuid"
+    run bash "${SCRIPTS_DIR}/goose_pw_select.sh" "slot" "not-a-uuid"
   [ "$status" -eq 1 ]
   [[ "$output" == *"invalid UUID"* ]]
 }
 
-@test "oz_pw_review.sh rejects invalid role" {
+@test "goose_pw_review.sh rejects invalid role" {
   cd "${TEST_TMPDIR}/fake-repo"
   HOME="${FAKE_HOME}" PATH="${TEST_TMPDIR}/bin:${PATH}" DRY_RUN=1 \
-    run bash "${SCRIPTS_DIR}/oz_pw_review.sh" "bats-test-slot" "not-a-role"
+    run bash "${SCRIPTS_DIR}/goose_pw_review.sh" "bats-test-slot" "not-a-role"
   [ "$status" -eq 1 ]
   [[ "$output" == *"invalid role"* ]]
 }

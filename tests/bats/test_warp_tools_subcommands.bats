@@ -1,10 +1,10 @@
 #!/usr/bin/env bats
-# tests/bats/test_warp_tools_subcommands.bats
-# Tests for bin/warp-tools subcommands in DRY_RUN and diagnostic modes.
+# tests/bats/test_goose_tools_subcommands.bats
+# Tests for bin/goose-tools subcommands in DRY_RUN and diagnostic modes.
 
 setup() {
   REPO_ROOT="$(cd "${BATS_TEST_DIRNAME}/../.." && pwd)"
-  BIN="${REPO_ROOT}/bin/warp-tools"
+  BIN="${REPO_ROOT}/bin/goose-tools"
   TEST_TMPDIR="$(mktemp -d)"
   export TEST_TMPDIR
 }
@@ -13,20 +13,20 @@ teardown() {
   rm -rf "${TEST_TMPDIR}"
 }
 
-@test "bin/warp-tools --help prints usage" {
+@test "bin/goose-tools --help prints usage" {
   run "${BIN}" --help
   [ "$status" -eq 0 ]
   [[ "$output" == *"Usage"* ]] || [[ "$output" == *"install"* ]]
 }
 
-@test "bin/warp-tools doctor runs without error" {
-  # doctor checks profiles.env which may not exist in CI; it exits 1 with issues.
+@test "bin/goose-tools doctor runs without error" {
+  # doctor checks recipes.env which may not exist in CI; it exits 1 with issues.
   # We just verify it produces output.
   run "${BIN}" doctor
   [ -n "$output" ]
 }
 
-@test "bin/warp-tools install globals --dry-run exits 0" {
+@test "bin/goose-tools install globals --dry-run exits 0" {
   # install globals calls oz agent profile list (even in dry-run). Use a fake
   # oz on PATH so the test doesn't hang on the real oz CLI.
   FAKE_OZ_DIR="$(mktemp -d)"
@@ -40,68 +40,68 @@ EOF
   [[ "$output" == *"DRY RUN"* ]] || [[ "$output" == *"missing"* ]]
 }
 
-@test "bin/warp-tools scaffold repo --dry-run requires existing path" {
+@test "bin/goose-tools scaffold repo --dry-run requires existing path" {
   run "${BIN}" --dry-run scaffold repo "${TEST_TMPDIR}/nonexistent"
   [ "$status" -eq 1 ]
   [[ "$output" == *"does not exist"* ]]
 }
 
-@test "bin/warp-tools scaffold repo --dry-run works on real directory" {
+@test "bin/goose-tools scaffold repo --dry-run works on real directory" {
   # Scaffold prompts interactively; provide empty lines to use defaults.
   run bash -c "${BIN} --dry-run scaffold repo ${TEST_TMPDIR} <<< $'\n\n\n'"
   [ "$status" -eq 0 ]
   [[ "$output" == *"DRY"* ]]
 }
 
-@test "bin/warp-tools update repo --dry-run fails without manifest" {
+@test "bin/goose-tools update repo --dry-run fails without manifest" {
   run "${BIN}" --dry-run update repo "${TEST_TMPDIR}"
   [ "$status" -eq 1 ]
-  [[ "$output" == *"no .warp-tools-manifest.json"* ]]
+  [[ "$output" == *"no .goose-tools-manifest.json"* ]]
 }
 
-@test "bin/warp-tools slot clear --dry-run on missing slot reports nothing to do" {
+@test "bin/goose-tools slot clear --dry-run on missing slot reports nothing to do" {
   run "${BIN}" --dry-run slot clear bats-test-slot
   [ "$status" -eq 0 ]
   [[ "$output" == *"does not exist"* ]]
 }
 
-@test "bin/warp-tools slot archive on missing slot exits 1" {
+@test "bin/goose-tools slot archive on missing slot exits 1" {
   run "${BIN}" --dry-run slot archive bats-test-slot
   [ "$status" -eq 1 ] || [ "$status" -eq 0 ]
 }
 
-@test "bin/warp-tools unknown subcommand exits 1" {
+@test "bin/goose-tools unknown subcommand exits 1" {
   run "${BIN}" not-a-command
   [ "$status" -eq 1 ]
   [[ "$output" == *"unknown subcommand"* ]]
 }
 
-@test "bin/warp-tools inventory generates INVENTORY.md" {
+@test "bin/goose-tools inventory generates INVENTORY.md" {
   run "${BIN}" --force inventory
   [ "$status" -eq 0 ]
   [ -f "${REPO_ROOT}/INVENTORY.md" ]
   [[ "$output" == *"INVENTORY.md"* ]]
 }
 
-@test "bin/warp-tools inventory --json prints JSON" {
+@test "bin/goose-tools inventory --json prints JSON" {
   run "${BIN}" --force --json inventory
   [ "$status" -eq 0 ]
   [[ "$output" == *'"generated_at"'* ]]
 }
 
-@test "bin/warp-tools todo --scan-only prints analysis" {
+@test "bin/goose-tools todo --scan-only prints analysis" {
   run "${BIN}" --scan-only todo
   [ "$status" -eq 0 ]
   [[ "$output" == *"TODO Scan Only"* ]]
 }
 
-@test "bin/warp-tools plan --dry-run works" {
+@test "bin/goose-tools plan --dry-run works" {
   run "${BIN}" --dry-run plan test-bats-slot "Bats Test Plan" "Test spec"
   [ "$status" -eq 0 ]
   [[ "$output" == *"DRY RUN"* ]]
 }
 
-@test "bin/warp-tools plan --with-inventory --dry-run injects context" {
+@test "bin/goose-tools plan --with-inventory --dry-run injects context" {
   run "${BIN}" --force inventory
   [ "$status" -eq 0 ]
   run "${BIN}" --dry-run --with-inventory plan test-bats-ctx "Ctx Test" "Spec"
@@ -196,7 +196,7 @@ EOF
 @test "scaffold repo: python is the default profile" {
   run bash -c "${BIN} scaffold repo ${TEST_TMPDIR} <<< $'\n\n\n'"
   [ "$status" -eq 0 ]
-  local mf="${TEST_TMPDIR}/.warp-tools-manifest.json"
+  local mf="${TEST_TMPDIR}/.goose-tools-manifest.json"
   [ -f "$mf" ]
   grep -q '"profile": "python"' "$mf"
 }
@@ -214,8 +214,8 @@ EOF
   [ -d "${TEST_TMPDIR}/.agents/skills/agent-launcher" ]
   # agent-quality-lint is python-only — must NOT be installed
   [ ! -d "${TEST_TMPDIR}/.agents/skills/agent-quality-lint" ]
-  # deploy-warp-tools is in the core allowlist
-  [ -d "${TEST_TMPDIR}/.agents/skills/deploy-warp-tools" ]
+  # deploy-goose-tools is in the core allowlist
+  [ -d "${TEST_TMPDIR}/.agents/skills/deploy-goose-tools" ]
 }
 
 @test "scaffold repo: unknown profile token exits 1 with usage message" {
@@ -230,18 +230,18 @@ EOF
   [[ "$output" == *"unknown profile"* ]] || [[ "$output" == *"Valid profiles"* ]]
 }
 
-@test "scaffold repo: manifest is v1.1 with warp_tools_version, profile, skills fields in correct order" {
+@test "scaffold repo: manifest is v1.1 with goose_tools_version, profile, skills fields in correct order" {
   run bash -c "${BIN} scaffold repo ${TEST_TMPDIR} core <<< $'\n\n\n'"
   [ "$status" -eq 0 ]
   local mf mfc
-  mf="${TEST_TMPDIR}/.warp-tools-manifest.json"
+  mf="${TEST_TMPDIR}/.goose-tools-manifest.json"
   mfc="$(cat "$mf")"
-  [[ "$mfc" == *'"warp_tools_version": "1.1"'* ]]
+  [[ "$mfc" == *'"goose_tools_version": "1.1"'* ]]
   [[ "$mfc" == *'"profile": "core"'* ]]
   [[ "$mfc" == *'"skills"'* ]]
-  # Field order: warp_tools_version before profile before skills
+  # Field order: goose_tools_version before profile before skills
   local vpos ppos spos
-  vpos="${#mfc%%warp_tools_version*}"
+  vpos="${#mfc%%goose_tools_version*}"
   ppos="${#mfc%%\"profile\"*}"
   spos="${#mfc%%\"skills\"*}"
   [ "$vpos" -lt "$ppos" ]
@@ -252,7 +252,7 @@ EOF
   run bash -c "${BIN} scaffold repo ${TEST_TMPDIR} core <<< $'\n\n\n'"
   [ "$status" -eq 0 ]
   local mfc
-  mfc="$(cat "${TEST_TMPDIR}/.warp-tools-manifest.json")"
+  mfc="$(cat "${TEST_TMPDIR}/.goose-tools-manifest.json")"
   # agent-launcher (a) must appear before write-skill (w) in the JSON string
   local al_pos ws_pos
   al_pos="${#mfc%%agent-launcher*}"
@@ -264,13 +264,13 @@ EOF
   run bash -c "${BIN} scaffold repo ${TEST_TMPDIR} python <<< $'\n\n\n'"
   [ "$status" -eq 0 ]
   # Overwrite with a v1.0 manifest (no profile field)
-  printf '{"warp_tools_version": "1.0", "scaffolded_at": "2025-01-01T00:00:00Z", "source": "%s"}\n' \
-    "${REPO_ROOT}" > "${TEST_TMPDIR}/.warp-tools-manifest.json"
+  printf '{"goose_tools_version": "1.0", "scaffolded_at": "2025-01-01T00:00:00Z", "source": "%s"}\n' \
+    "${REPO_ROOT}" > "${TEST_TMPDIR}/.goose-tools-manifest.json"
   run "${BIN}" update repo "${TEST_TMPDIR}"
   [ "$status" -eq 0 ]
   local mfc
-  mfc="$(cat "${TEST_TMPDIR}/.warp-tools-manifest.json")"
-  [[ "$mfc" == *'"warp_tools_version": "1.1"'* ]]
+  mfc="$(cat "${TEST_TMPDIR}/.goose-tools-manifest.json")"
+  [[ "$mfc" == *'"goose_tools_version": "1.1"'* ]]
   [[ "$mfc" == *'"profile": "python"'* ]]
   # scaffolded_at from the v1.0 manifest must be preserved
   [[ "$mfc" == *'"scaffolded_at": "2025-01-01T00:00:00Z"'* ]]
@@ -302,8 +302,8 @@ EOF
   run bash -c "${BIN} scaffold repo ${TEST_TMPDIR} python <<< $'\n\n\n'"
   [ "$status" -eq 0 ]
   # Inject an invalid profile value
-  printf '{"warp_tools_version": "1.1", "scaffolded_at": "2025-01-01T00:00:00Z", "source": "%s", "profile": "invalid", "skills": []}\n' \
-    "${REPO_ROOT}" > "${TEST_TMPDIR}/.warp-tools-manifest.json"
+  printf '{"goose_tools_version": "1.1", "scaffolded_at": "2025-01-01T00:00:00Z", "source": "%s", "profile": "invalid", "skills": []}\n' \
+    "${REPO_ROOT}" > "${TEST_TMPDIR}/.goose-tools-manifest.json"
   run "${BIN}" update repo "${TEST_TMPDIR}"
   [ "$status" -eq 1 ]
   [[ "$output" == *"unknown profile"* ]] || [[ "$output" == *"Valid profiles"* ]]
@@ -350,5 +350,5 @@ EOF
   # AGENTS.md content must be unchanged
   [ "$(cat "${TEST_TMPDIR}/AGENTS.md")" = "$agents_content" ]
   # Manifest must reflect new profile
-  grep -q '"profile": "core"' "${TEST_TMPDIR}/.warp-tools-manifest.json"
+  grep -q '"profile": "core"' "${TEST_TMPDIR}/.goose-tools-manifest.json"
 }

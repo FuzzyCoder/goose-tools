@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# tests/test_oz_pw_plan_negative_rule.sh
+# tests/test_goose_pw_plan_negative_rule.sh
 #
-# Validates the new-plan pinning negative rule for oz_pw_plan.sh.
+# Validates the new-plan pinning negative rule for goose_pw_plan.sh.
 # Must pass under BOTH bash 4.0+ and zsh 5.0+.
 #
 # Assertions:
@@ -14,15 +14,15 @@
 #   (d) Script source contains explicit direct-write commands for repo_root and plan_title.
 #
 # Usage:
-#   bash tests/test_oz_pw_plan_negative_rule.sh
-#   zsh  tests/test_oz_pw_plan_negative_rule.sh
+#   bash tests/test_goose_pw_plan_negative_rule.sh
+#   zsh  tests/test_goose_pw_plan_negative_rule.sh
 #
 # Exit codes: 0 = all assertions passed, 1 = one or more assertions failed.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-PLAN_SCRIPT="${SCRIPT_DIR}/warp/workflows/scripts/oz_pw_plan.sh"
+PLAN_SCRIPT="${SCRIPT_DIR}/goose/workflows/scripts/goose_pw_plan.sh"
 
 PASS=0
 FAIL=0
@@ -37,7 +37,7 @@ assert_fail() {
   printf '  FAIL: %s\n' "$1"
 }
 
-printf 'Running negative rule assertions for oz_pw_plan.sh...\n\n'
+printf 'Running negative rule assertions for goose_pw_plan.sh...\n\n'
 
 #------------------------------------------------------------------------------
 # Set up a minimal fake slot/profiles environment so DRY_RUN=1 can run
@@ -51,14 +51,14 @@ mkdir -p "${FAKE_REPO}"
 git -C "${FAKE_REPO}" init -q
 git -C "${FAKE_REPO}" commit --allow-empty -m "init" -q
 
-# Create fake profiles.env
+# Create fake recipes.env
 FAKE_STATE="${TEST_TMPDIR}/state"
 mkdir -p "${FAKE_STATE}"
-cat > "${FAKE_STATE}/profiles.env" <<'EOF'
-PLANNER_ID=test-planner-id
-REVIEWER_ID=test-reviewer-id
-APPROVER_ID=test-approver-id
-CODER_ID=test-coder-id
+cat > "${FAKE_STATE}/recipes.env" <<'EOF'
+PLANNER_RECIPE=test-planner-id
+REVIEWER_RECIPE=test-reviewer-id
+APPROVER_RECIPE=test-approver-id
+CODER_RECIPE=test-coder-id
 EOF
 
 TEST_SLOT="test-slot"
@@ -74,7 +74,7 @@ TEST_PLAN_SPEC="Test plan specification content"
 # without modifying the script, we create a wrapper that substitutes HOME.
 FAKE_HOME="${TEST_TMPDIR}/fakehome"
 mkdir -p "${FAKE_HOME}/.warp/state/plan_workflow"
-cp "${FAKE_STATE}/profiles.env" "${FAKE_HOME}/.warp/state/plan_workflow/profiles.env"
+cp "${FAKE_STATE}/recipes.env" "${FAKE_HOME}/.warp/state/plan_workflow/recipes.env"
 
 # oz command mock (must not be called in DRY_RUN=1)
 FAKE_BIN="${TEST_TMPDIR}/bin"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # tests/shell_compat/run_compat.sh
 #
-# CI fixture: run every oz_pw_*.sh script and bin/warp-tools subcommands
+# CI fixture: run every goose_pw_*.sh script and bin/goose-tools subcommands
 # in DRY_RUN=1 mode under both bash 4.0+ and zsh 5.0+.
 #
 # Validates:
@@ -18,14 +18,14 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-SCRIPTS_DIR="${REPO_ROOT}/warp/workflows/scripts"
-BIN="${REPO_ROOT}/bin/warp-tools"
+SCRIPTS_DIR="${REPO_ROOT}/goose/workflows/scripts"
+BIN="${REPO_ROOT}/bin/goose-tools"
 
 PASS=0
 FAIL=0
 
 #------------------------------------------------------------------------------
-# Environment setup: fake HOME, fake git repo, fake profiles.env, fake oz
+# Environment setup: fake HOME, fake git repo, fake recipes.env, fake oz
 #------------------------------------------------------------------------------
 TEST_TMPDIR="$(mktemp -d)"
 trap 'rm -rf "${TEST_TMPDIR}"' EXIT
@@ -33,11 +33,11 @@ trap 'rm -rf "${TEST_TMPDIR}"' EXIT
 FAKE_HOME="${TEST_TMPDIR}/fakehome"
 mkdir -p "${FAKE_HOME}/.warp/state/plan_workflow"
 
-cat > "${FAKE_HOME}/.warp/state/plan_workflow/profiles.env" <<'EOF'
-PLANNER_ID=test-planner-id
-REVIEWER_ID=test-reviewer-id
-APPROVER_ID=test-approver-id
-CODER_ID=test-coder-id
+cat > "${FAKE_HOME}/.warp/state/plan_workflow/recipes.env" <<'EOF'
+PLANNER_RECIPE=test-planner-id
+REVIEWER_RECIPE=test-reviewer-id
+APPROVER_RECIPE=test-approver-id
+CODER_RECIPE=test-coder-id
 EOF
 
 # Fake git repo (canonicalize path for macOS /var/folders -> /private)
@@ -127,36 +127,36 @@ for interp in bash zsh; do
 
   printf -- '-- Interpreter: %s (%s) --\n' "$interp" "$("$interp" --version 2>&1 | head -1)"
 
-  # oz_pw_plan.sh (new slot)
-  run_test "$interp" "oz_pw_plan.sh" \
-    "'${SCRIPTS_DIR}/oz_pw_plan.sh' 'new-slot' 'My Plan Title' 'Plan content'"
+  # goose_pw_plan.sh (new slot)
+  run_test "$interp" "goose_pw_plan.sh" \
+    "'${SCRIPTS_DIR}/goose_pw_plan.sh' 'new-slot' 'My Plan Title' 'Plan content'"
 
-  # oz_pw_select.sh (existing plan)
-  run_test "$interp" "oz_pw_select.sh" \
-    "'${SCRIPTS_DIR}/oz_pw_select.sh' 'another-slot' 'aaaabbbb-cccc-dddd-eeee-ffffaaaabbbb'"
+  # goose_pw_select.sh (existing plan)
+  run_test "$interp" "goose_pw_select.sh" \
+    "'${SCRIPTS_DIR}/goose_pw_select.sh' 'another-slot' 'aaaabbbb-cccc-dddd-eeee-ffffaaaabbbb'"
 
-  # oz_pw_review.sh (reviewer)
-  run_test "$interp" "oz_pw_review.sh reviewer" \
-    "'${SCRIPTS_DIR}/oz_pw_review.sh' 'test-slot' 'reviewer'"
+  # goose_pw_review.sh (reviewer)
+  run_test "$interp" "goose_pw_review.sh reviewer" \
+    "'${SCRIPTS_DIR}/goose_pw_review.sh' 'test-slot' 'reviewer'"
 
-  # oz_pw_review.sh (approver)
-  run_test "$interp" "oz_pw_review.sh approver" \
-    "'${SCRIPTS_DIR}/oz_pw_review.sh' 'test-slot' 'approver'"
+  # goose_pw_review.sh (approver)
+  run_test "$interp" "goose_pw_review.sh approver" \
+    "'${SCRIPTS_DIR}/goose_pw_review.sh' 'test-slot' 'approver'"
 
-  # oz_pw_edit.sh
-  run_test "$interp" "oz_pw_edit.sh" \
-    "'${SCRIPTS_DIR}/oz_pw_edit.sh' 'test-slot'"
+  # goose_pw_edit.sh
+  run_test "$interp" "goose_pw_edit.sh" \
+    "'${SCRIPTS_DIR}/goose_pw_edit.sh' 'test-slot'"
 
-  # oz_pw_finalize.sh
-  run_test "$interp" "oz_pw_finalize.sh" \
-    "'${SCRIPTS_DIR}/oz_pw_finalize.sh' 'test-slot'"
+  # goose_pw_finalize.sh
+  run_test "$interp" "goose_pw_finalize.sh" \
+    "'${SCRIPTS_DIR}/goose_pw_finalize.sh' 'test-slot'"
 
-  # oz_pw_execute.sh
-  run_test "$interp" "oz_pw_execute.sh" \
-    "'${SCRIPTS_DIR}/oz_pw_execute.sh' 'test-slot'"
+  # goose_pw_execute.sh
+  run_test "$interp" "goose_pw_execute.sh" \
+    "'${SCRIPTS_DIR}/goose_pw_execute.sh' 'test-slot'"
 
-  # bin/warp-tools doctor (DRY_RUN not needed; uses WARP_TOOLS_ROOT from git)
-  # Run from within the warp-tools repo itself
+  # bin/goose-tools doctor (DRY_RUN not needed; uses GOOSE_TOOLS_ROOT from git)
+  # Run from within the goose-tools repo itself
   local_output="$(
     cd "${REPO_ROOT}" && \
     HOME="${FAKE_HOME}" \
@@ -165,26 +165,26 @@ for interp in bash zsh; do
   )" || true
   if [ -n "$local_output" ]; then
     PASS=$((PASS + 1))
-    printf '  PASS [%s] bin/warp-tools doctor\n' "$interp"
+    printf '  PASS [%s] bin/goose-tools doctor\n' "$interp"
   else
     FAIL=$((FAIL + 1))
-    printf '  FAIL [%s] bin/warp-tools doctor — empty output\n' "$interp"
+    printf '  FAIL [%s] bin/goose-tools doctor — empty output\n' "$interp"
   fi
 
   if [ "$interp" = "zsh" ]; then
-    printf '  SKIP [%s] bin/warp-tools slot clear (zsh: BASH_SOURCE not supported)\n' "$interp"
-    printf '  SKIP [%s] bin/warp-tools slot archive (zsh: BASH_SOURCE not supported)\n' "$interp"
+    printf '  SKIP [%s] bin/goose-tools slot clear (zsh: BASH_SOURCE not supported)\n' "$interp"
+    printf '  SKIP [%s] bin/goose-tools slot archive (zsh: BASH_SOURCE not supported)\n' "$interp"
   else
-    # bin/warp-tools slot clear (dry-run)
-    run_test "$interp" "bin/warp-tools slot clear --dry-run" \
+    # bin/goose-tools slot clear (dry-run)
+    run_test "$interp" "bin/goose-tools slot clear --dry-run" \
       "'${BIN}' --dry-run slot clear 'test-slot'"
 
-    # bin/warp-tools slot archive (dry-run)
-    run_test "$interp" "bin/warp-tools slot archive --dry-run" \
+    # bin/goose-tools slot archive (dry-run)
+    run_test "$interp" "bin/goose-tools slot archive --dry-run" \
       "'${BIN}' --dry-run slot archive 'test-slot'"
   fi
 
-  # bin/warp-tools --force inventory (run from repo root; exercises the new markdown renderer)
+  # bin/goose-tools --force inventory (run from repo root; exercises the new markdown renderer)
   inventory_output=""
   inventory_rc=0
   inventory_output="$(
@@ -195,10 +195,10 @@ for interp in bash zsh; do
   )" || inventory_rc=$?
   if [ "$inventory_rc" = "0" ] && [ -n "$inventory_output" ]; then
     PASS=$((PASS + 1))
-    printf '  PASS [%s] bin/warp-tools --force inventory\n' "$interp"
+    printf '  PASS [%s] bin/goose-tools --force inventory\n' "$interp"
   else
     FAIL=$((FAIL + 1))
-    printf '  FAIL [%s] bin/warp-tools --force inventory — exited %d\n' "$interp" "$inventory_rc"
+    printf '  FAIL [%s] bin/goose-tools --force inventory — exited %d\n' "$interp" "$inventory_rc"
     printf '  Output: %s\n' "$inventory_output"
   fi
 

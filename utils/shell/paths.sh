@@ -1,29 +1,29 @@
 #!/usr/bin/env bash
-# Path resolution constants for warp-tools.
+# Path resolution constants for goose-tools.
 
-# GitHub API base URL — used by utils/shell/github.sh helpers.
-# Override in tests by setting GITHUB_API_BASE before sourcing.
-GITHUB_API_BASE="${GITHUB_API_BASE:-https://api.github.com}"
-
-# Resolve warp-tools repo root (script lives in bin/)
-resolve_warp_tools_root() {
+# Resolve goose-tools repo root (script lives in bin/)
+resolve_goose_tools_root() {
   git -C "$(dirname "$0")/.." rev-parse --show-toplevel 2>/dev/null || {
-    printf 'error: must be run from within the warp-tools git repo\n' >&2
+    printf 'error: must be run from within the goose-tools git repo\n' >&2
     exit 1
   }
 }
 
-# Global state directories
-STATE_DIR="${HOME}/.warp/state/plan_workflow"
+# Global state directories (~/.goose/ is goose-tools runtime state)
+STATE_DIR="${HOME}/.goose/state/plan_workflow"
 # shellcheck disable=SC2034
-PROFILES_ENV="${STATE_DIR}/profiles.env"
+RECIPES_ENV="${STATE_DIR}/recipes.env"
 # shellcheck disable=SC2034
-GLOBAL_MANIFEST="${HOME}/.warp/state/warp-tools-manifest.json"
+GLOBAL_MANIFEST="${HOME}/.goose/state/goose-tools-manifest.json"
 # shellcheck disable=SC2034
-GLOBAL_SCRIPTS_DIR="${HOME}/.warp/workflows/scripts"
+GLOBAL_SCRIPTS_DIR="${HOME}/.goose/workflows/scripts"
 # shellcheck disable=SC2034
-GLOBAL_WORKFLOWS_DIR="${HOME}/.warp/workflows"
+GLOBAL_WORKFLOWS_DIR="${HOME}/.goose/workflows"
 # shellcheck disable=SC2034
 GLOBAL_SKILLS_DIR="${HOME}/.agents/skills"
 # shellcheck disable=SC2034
-PLANS_REGISTRY="${HOME}/warp-agent-plans.md"
+PLANS_REGISTRY="${HOME}/goose-agent-plans.md"
+
+# GitHub API base (overridable for testing)
+# shellcheck disable=SC2034
+GITHUB_API_BASE="${GITHUB_API_BASE:-https://api.github.com}"

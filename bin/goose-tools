@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# goose-tools — install, scaffold, update, doctor, and slot management for goose-tools
+#
+# Usage: bin/goose-tools <subcommand> [options] [args]
+#
+# Subcommands:
+#   install globals              Install runtime assets to ~/.goose/ and ~/.agents/
+#   scaffold repo <path> [prof]  Scaffold AGENTS.md + skills into a consumer repo
+#   update repo <path>           Refresh goose-tools-managed files in a consumer repo
+#   doctor [--self-test]         Check installation health and drift
+#   slot clear <slot>            Remove a slot directory (interactive confirmation)
+#   slot archive <slot>          Archive a slot directory under archive/<date>-<slot>/
+#   inventory [--json]           Regenerate INVENTORY.md with file listings and metadata
+#   todo [--scan-only]           Regenerate TODO.md with quality analysis
+#   plan <slot> <title> [spec]   Launch Planner with optional --with-inventory / --with-todo
+#
+# Global flags:
+#   --dry-run       Print intended actions; make no changes (exit 0)
+#   --force         Overwrite locally-modified managed files without prompting
+#   --json          Emit structured JSON output (where supported)
+#   --profile-only  (scaffold repo only) Switch profile without re-prompting for placeholders
+#
+# Shell: runs under bash 4.0+ and zsh 5.0+ (POSIX+common-subset; no bash-isms)
+
+set -euo pipefail
+
+# shellcheck disable=SC2128
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE:-$0}")" && pwd)"
+GOOSE_TOOLS_ROOT="$(git -C "${SCRIPT_DIR}/.." rev-parse --show-toplevel 2>/dev/null)" || {
+  printf 'error: bin/goose-tools must be run from within the goose-tools git repo\n' >&2
+  exit 1
+}
+
+# Source shared helpers
+# shellcheck source=utils/shell/logging.sh
+source "${GOOSE_TOOLS_ROOT}/utils/shell/logging.sh"
+# shellcheck source=utils/shell/paths.sh
+source "${GOOSE_TOOLS_ROOT}/utils/shell/paths.sh"
+# shellcheck source=utils/shell/flags.sh
+source "${GOOSE_TOOLS_ROOT}/utils/shell/flags.sh"
+# shellcheck source=utils/shell/common.sh
+source "${GOOSE_TOOLS_ROOT}/utils/shell/common.sh"
+
+# Source subcommand modules
+# shellcheck source=bin/commands/install.sh
+source "${GOOSE_TOOLS_ROOT}/bin/commands/install.sh"
+# shellcheck source=bin/commands/scaffold.sh
+source "${GOOSE_TOOLS_ROOT}/bin/commands/scaffold.sh"
+# shellcheck source=bin/commands/update.sh
+source "${GOOSE_TOOLS_ROOT}/bin/commands/update.sh"
+# shellcheck source=bin/commands/doctor.sh
+source "${GOOSE_TOOLS_ROOT}/bin/commands/doctor.sh"
+# shellcheck source=bin/commands/slot.sh
+source "${GOOSE_TOOLS_ROOT}/bin/commands/slot.sh"
+# shellcheck source=bin/commands/inventory.sh
+source "${GOOSE_TOOLS_ROOT}/bin/commands/inventory.sh"
+# shellcheck source=bin/commands/todo.sh
+source "${GOOSE_TOOLS_ROOT}/bin/commands/todo.sh"
+# shellcheck source=bin/commands/plan.sh
+source "${GOOSE_TOOLS_ROOT}/bin/commands/plan.sh"
+
+# Parse global flags and shift them out
+parse_flags "$@"
+set -- "${REMAINING[@]}"
+
+SUBCOMMAND="${1:-}"
+shift || true
+
+case "${SUBCOMMAND}" in
+  install)
+    [ "${1:-}" = "globals" ] && shift && cmd_install_globals "$@" || {
+      printf 'error: use: install globals\n' >&2; exit 1
+    }
+    ;;
+  scaffold)
+    [ "${1:-}" = "repo" ] && shift && cmd_scaffold_repo "$@" || {
+      printf 'error: use: scaffold repo <path>\n' >&2; exit 1
+    }
+    ;;
+  update)
+    [ "${1:-}" = "repo" ] && shift && cmd_update_repo "$@" || {
+      printf 'error: use: update repo <path>\n' >&2; exit 1
+    }
+    ;;
+  doctor)   cmd_doctor "$@" ;;
+  slot)
+    local_slot_cmd="${1:-}"; shift || true
+    case "${local_slot_cmd}" in
+      clear)   cmd_slot_clear "$@" ;;
+      archive) cmd_slot_archive "$@" ;;
+      *)
+        printf 'error: use: slot clear|archive <slot>\n' >&2
+        exit 1
+        ;;
+    esac
+    ;;
+  inventory) cmd_inventory "$@" ;;
+  todo)      cmd_todo "$@" ;;
+  plan)      cmd_plan "$@" ;;
+  ""|help|--help|-h) sed -n '2,22p' "$0" ;;
+  *)
+    printf 'error: unknown subcommand "%s"\n  Run: bin/goose-tools --help\n' "${SUBCOMMAND}" >&2
+    exit 1
+    ;;
+esac
