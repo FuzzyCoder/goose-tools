@@ -50,7 +50,7 @@ FAKE_REPO="$(git rev-parse --show-toplevel)"
 cd "${REPO_ROOT}"
 
 # Fake plan registry with one active plan
-cat > "${FAKE_HOME}/warp-agent-plans.md" <<'EOF'
+cat > "${FAKE_HOME}/goose-agent-plans.md" <<'EOF'
 # Warp Plan Registry
 
 ## Active Plans
