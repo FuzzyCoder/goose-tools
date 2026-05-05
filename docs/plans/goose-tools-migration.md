@@ -1,9 +1,9 @@
-# Plan: goose-tools — Goose-Native Analog of warp-tools
+# Plan: goose-tools — Goose-Native Analog of goose-tools
 
 **Created:** 2026-05-05  
 **Revised:** 2026-05-05 (R1–R10 applied; R1–R6 rev2 applied)  
 **Status:** Draft  
-**Scope:** Create a new GitHub repo `goose-tools` that migrates the warp-tools
+**Scope:** Create a new GitHub repo `goose-tools` that migrates the goose-tools
 toolchain to the Goose platform, replacing Warp/Oz-specific primitives with their
 Goose-native equivalents.
 
@@ -11,15 +11,15 @@ Goose-native equivalents.
 
 ## 0. Background & Motivation
 
-`warp-tools` is a portable agent toolchain built for Warp's Oz platform. It provides:
+`goose-tools` is a portable agent toolchain built for the Goose platform. It provides:
 
 1. A structured **Plan→Review→Edit→Approve→Finalize→Execute** workflow
 2. A reusable **code-quality kit** (13-rule slop linter + remediation skills)
 3. A **portable skill library** (`write-tests`, `fix-*`, `review-pr`, etc.)
-4. A **CLI** (`bin/warp-tools`) for install, scaffold, slot management, inventory
+4. A **CLI** (`bin/goose-tools`) for install, scaffold, slot management, inventory
 
-All of this is hard-wired to Oz primitives: `oz agent run`, `oz agent profile`,
-`create_plan()`, Warp Drive notebooks, Warp Command Palette YAMLs, and
+All of this is hard-wired to Oz primitives: `goose run --recipe`, `goose recipe`,
+`create_plan()`, goose-tools operator guides, Warp Command Palette YAMLs, and
 `~/.warp/` state paths.
 
 Goose has analogous but distinct primitives:
@@ -27,15 +27,15 @@ Goose has analogous but distinct primitives:
 | Warp/Oz concept | Goose equivalent |
 |---|---|
 | Agent profile | Recipe (`title`, `instructions`, `extensions`, `settings`) |
-| `oz agent run --profile X` | `goose run --recipe recipe.yaml` |
-| Warp Drive notebook | Recipe (discovered via `GOOSE_RECIPE_PATH` pointing at the local clone) |
+| `goose run --recipe --profile X` | `goose run --recipe recipe.yaml` |
+| goose-tools operator guide | Recipe (discovered via `GOOSE_RECIPE_PATH` pointing at the local clone) |
 | Command Palette YAML | Recipe `activities` field (Desktop) |
 | `create_plan()` | No direct equivalent; implement via `uuidgen` + markdown registry (see §3.5); Goose's native `/plan` command is a potential complement |
-| `~/.warp/state/plan_workflow/` | `~/.goose/state/plan_workflow/` (new convention) |
-| `oz_pw_*.sh` launcher scripts | Shell launchers calling `goose run --recipe` |
+| `~/.goose/state/plan_workflow/` | `~/.goose/state/plan_workflow/` (new convention) |
+| `goose_pw_*.sh` launcher scripts | Shell launchers calling `goose run --recipe` |
 | `AGENTS.md` | `AGENTS.md` (identical — Goose reads these too) |
 | Skills (`.agents/skills/`) | Skills (`.agents/skills/`) + Goose `skills` extension |
-| `bin/warp-tools` CLI | `bin/goose-tools` CLI (adapted) |
+| `bin/goose-tools` CLI | `bin/goose-tools` CLI (adapted) |
 | Warp `global-warp-rule.md` | Goose `config.yaml` `instructions` / system prompt |
 
 ---
@@ -49,7 +49,7 @@ Goose has analogous but distinct primitives:
 4. **Replace** warp-specific references throughout (`warp` → `goose`, `oz` → `goose`,
    `~/.warp/` → `~/.goose/`, etc.)
 5. **Establish** the repo as a standalone, installable toolchain — not a fork of
-   warp-tools
+   goose-tools
 
 ---
 
@@ -81,25 +81,25 @@ The following assets are platform-agnostic and migrate verbatim (or near-verbati
 - Clone locally to `/Volumes/secure/code/goose-tools`
 - Add `origin` remote, initial commit, push
 
-### 3.2 CLI: `bin/warp-tools` → `bin/goose-tools`
+### 3.2 CLI: `bin/goose-tools` → `bin/goose-tools`
 
 | Change | Detail |
 |---|---|
-| Rename binary | `bin/warp-tools` → `bin/goose-tools` |
-| State path | `~/.warp/state/plan_workflow/` → `~/.goose/state/plan_workflow/` |
-| Install path | `~/.warp/workflows/` → `~/.goose/workflows/` |
+| Rename binary | `bin/goose-tools` → `bin/goose-tools` |
+| State path | `~/.goose/state/plan_workflow/` → `~/.goose/state/plan_workflow/` |
+| Install path | `~/.goose/workflows/` → `~/.goose/workflows/` |
 | Skills path | `~/.agents/skills/` → unchanged (already platform-agnostic) |
-| Profile resolution | Remove `oz agent profile list` / `resolve_profile_id()`; replace with recipe file lookup |
+| Profile resolution | Remove `goose recipe list` / `resolve_profile_id()`; replace with recipe file lookup |
 | Subcommands to adapt | `install`, `scaffold`, `update`, `doctor`, `slot`, `plan`, `inventory`, `todo` |
-| Remove | `warp/` directory entirely (Warp Drive notebooks, Command Palette YAMLs) |
+| Remove | `warp/` directory entirely (goose-tools operator guides, Command Palette YAMLs) |
 
-### 3.3 Workflow Scripts: `oz_pw_*.sh` → `goose_pw_*.sh`
+### 3.3 Workflow Scripts: `goose_pw_*.sh` → `goose_pw_*.sh`
 
-The 6 Plan→Execute scripts call `oz agent run --profile <id>`. Replace with:
+The 6 Plan→Execute scripts call `goose run --recipe --profile <id>`. Replace with:
 
 ```bash
 # Before (Warp/Oz)
-oz agent run --profile "$PLANNER_PROFILE_ID" --prompt "$prompt"
+goose run --recipe --profile "$PLANNER_PROFILE_ID" --prompt "$prompt"
 
 # After (Goose) — interactive (streams to terminal, stays in session)
 goose run --recipe planner
@@ -116,16 +116,16 @@ Scripts to adapt:
 
 | Old | New | Role |
 |---|---|---|
-| `oz_pw_plan.sh` | `goose_pw_plan.sh` | Launch Planner recipe |
-| `oz_pw_review.sh` | `goose_pw_review.sh` | Launch Reviewer recipe |
-| `oz_pw_edit.sh` | `goose_pw_edit.sh` | Launch Coder recipe (edits) |
-| `oz_pw_finalize.sh` | `goose_pw_finalize.sh` | Launch Coder recipe (finalize) |
-| `oz_pw_execute.sh` | `goose_pw_execute.sh` | Launch Coder recipe (execute) |
-| `oz_pw_select.sh` | `goose_pw_select.sh` | Pin existing plan to slot |
+| `goose_pw_plan.sh` | `goose_pw_plan.sh` | Launch Planner recipe |
+| `goose_pw_review.sh` | `goose_pw_review.sh` | Launch Reviewer recipe |
+| `goose_pw_edit.sh` | `goose_pw_edit.sh` | Launch Coder recipe (edits) |
+| `goose_pw_finalize.sh` | `goose_pw_finalize.sh` | Launch Coder recipe (finalize) |
+| `goose_pw_execute.sh` | `goose_pw_execute.sh` | Launch Coder recipe (execute) |
+| `goose_pw_select.sh` | `goose_pw_select.sh` | Pin existing plan to slot |
 
-### 3.4 Warp Drive Notebooks → Goose Recipes
+### 3.4 Goose Desktop Notebooks → Goose Recipes
 
-Warp Drive notebooks (`.md` operator guides displayed in the Warp UI) have no direct
+goose-tools operator guides (`.md` operator guides displayed in the Warp UI) have no direct
 Goose equivalent. Replace with:
 
 - **Recipes** (`.yaml`) stored in `goose/recipes/` — one per agent role
@@ -145,7 +145,7 @@ Recipe files to create:
 Oz's `create_plan()` built-in has no direct Goose equivalent. Replace with:
 
 - **Plan registry**: Markdown file at `~/goose-agent-plans.md` (same schema as
-  `~/warp-agent-plans.md`)
+  `~/goose-agent-plans.md`)
 - **Plan ID**: Use `uuidgen` at slot creation time (shell-native, no API call)
 - **Todo extension**: Use `Todo.todoWrite()` for in-session task tracking
 - **`manage-plans` skill**: Adapt to write/read `~/goose-agent-plans.md` directly (see §3.13)
@@ -185,17 +185,17 @@ settings:
 > is not a recipe setting — set it in `~/.config/goose/config.yaml` or pass it
 > as an environment variable to `goose run`.
 
-### 3.7 `deploy-warp-tools` Skill → `deploy-goose-tools`
+### 3.7 `deploy-goose-tools` Skill → `deploy-goose-tools`
 
 Adapt the deployment skill:
-- Replace `warp-tools` references with `goose-tools`
+- Replace `goose-tools` references with `goose-tools`
 - Replace `~/.warp/` paths with `~/.goose/`
 - Replace profile installation with recipe installation
-- Remove Warp Drive notebook import steps
+- Remove goose-tools operator guide import steps
 
 ### 3.8 `agent-launcher` Skill → `goose-launcher`
 
-Replace Oz-specific launcher patterns (`oz agent run`, `--profile`, prompt externalization
+Replace Oz-specific launcher patterns (`goose run --recipe`, `--profile`, prompt externalization
 via tmpfiles) with Goose equivalents:
 
 ```bash
@@ -218,14 +218,14 @@ Replace `oz model list` with Goose provider/model configuration:
 
 ### 3.10 `plan-workflow` Skill
 
-Adapt to drive `goose_pw_*.sh` scripts instead of `oz_pw_*.sh`. Update all slot
-references from `~/.warp/state/plan_workflow/` → `~/.goose/state/plan_workflow/`.
+Adapt to drive `goose_pw_*.sh` scripts instead of `goose_pw_*.sh`. Update all slot
+references from `~/.goose/state/plan_workflow/` → `~/.goose/state/plan_workflow/`.
 
 ### 3.11 AGENTS.md Updates
 
 Remove or replace all Warp-specific rules:
 - `AGENT_PROFILE_MODELS` → Goose `config.yaml` model configuration
-- Remove Warp Drive / Command Palette references
+- Remove Goose Desktop / Command Palette references
 - Keep all platform-agnostic rules (code style, imports, error handling, etc.)
 
 ### 3.12 Path Convention: `~/.config/goose/` (Config) vs `~/.goose/` (State)
@@ -248,17 +248,17 @@ This mirrors how Goose itself separates config from session data.
 Adapt to remove all Warp/Oz-specific dependencies:
 - Replace `create_plan()` tool call with `uuidgen` + direct registry write
 - Replace `edit_plans` / `read_plans` tool calls with direct file read/write
-- Replace `~/warp-agent-plans.md` with `~/goose-agent-plans.md`
-- Remove `Warp Drive notebook` references
-- Replace `oz_pw_review.sh` / `oz_pw_select.sh` step references with `goose_pw_*` equivalents
-- Replace `~/.warp/state/plan_workflow/` paths with `~/.goose/state/plan_workflow/`
+- Replace `~/goose-agent-plans.md` with `~/goose-agent-plans.md`
+- Remove `goose-tools operator guide` references
+- Replace `goose_pw_review.sh` / `goose_pw_select.sh` step references with `goose_pw_*` equivalents
+- Replace `~/.goose/state/plan_workflow/` paths with `~/.goose/state/plan_workflow/`
 
 ### 3.14 `fix-issue` Skill
 
 Adapt to remove Warp/Oz-specific dependencies:
 - Replace "create a Warp plan" with "create a goose-tools plan" (via `manage-plans`)
 - Replace `Co-Authored-By: Oz <oz-agent@warp.dev>` with a neutral co-author tag
-- Replace `~/warp-agent-plans.md` references with `~/goose-agent-plans.md`
+- Replace `~/goose-agent-plans.md` references with `~/goose-agent-plans.md`
 - Replace `create_plan` tool call reference with the `uuidgen` registry approach
 
 ### 3.15 `review-and-fix-pr` Skill
@@ -288,7 +288,7 @@ repo root (`<name>/recipe.yaml`), which conflicts with the plan's nested
 (it's a toolchain with a CLI, scripts, and skills), `GOOSE_RECIPE_PATH` is
 simpler, always current, and avoids the copy-drift problem entirely.
 
-**`profiles.env` replacement** — replace with `recipes.env`, written by
+**`recipes.env` replacement** — replace with `recipes.env`, written by
 `bin/goose-tools install globals`, recording the resolved recipe paths:
 
 ```bash
@@ -300,7 +300,7 @@ APPROVER_RECIPE=${GOOSE_TOOLS_ROOT}/goose/recipes/approver/recipe.yaml
 CODER_RECIPE=${GOOSE_TOOLS_ROOT}/goose/recipes/coder/recipe.yaml
 ```
 
-The `goose_pw_*.sh` scripts source this file instead of `profiles.env`.
+The `goose_pw_*.sh` scripts source this file instead of `recipes.env`.
 
 ### 3.17 Additional Skills — Minor Warp/Oz Text Replacement
 
@@ -310,14 +310,14 @@ are covered by Phase 5 step 8 but are enumerated here for completeness:
 
 | Skill | # Refs | What to change |
 |---|---|---|
-| `improve-shell-quality` | 9 | `bin/warp-tools` → `bin/goose-tools`, `~/.warp/state/` → `~/.goose/state/` |
-| `manage-capabilities` | 3 | "provided by Warp" → "provided by Goose", `warp-tools repository` → `goose-tools repository` |
-| `manage-inventory` | 9 | `bin/warp-tools inventory` → `bin/goose-tools inventory`, detection logic paths |
-| `manage-todo` | 4 | `bin/warp-tools todo` → `bin/goose-tools todo`, detection logic paths |
-| `review-plan` | 5 | `oz_pw_review.sh` → `goose_pw_review.sh`, `oz_pw_edit.sh` → `goose_pw_edit.sh`, `oz_pw_finalize.sh` → `goose_pw_finalize.sh` |
+| `improve-shell-quality` | 9 | `bin/goose-tools` → `bin/goose-tools`, `~/.warp/state/` → `~/.goose/state/` |
+| `manage-capabilities` | 3 | "provided by Warp" → "provided by Goose", `goose-tools repository` → `goose-tools repository` |
+| `manage-inventory` | 9 | `bin/goose-tools inventory` → `bin/goose-tools inventory`, detection logic paths |
+| `manage-todo` | 4 | `bin/goose-tools todo` → `bin/goose-tools todo`, detection logic paths |
+| `review-plan` | 5 | `goose_pw_review.sh` → `goose_pw_review.sh`, `goose_pw_edit.sh` → `goose_pw_edit.sh`, `goose_pw_finalize.sh` → `goose_pw_finalize.sh` |
 | `review-pr` | 3 | `oz-agent@warp.dev` → neutral co-author tag, disclosure boilerplate |
 | `sync-worktrees` | 2 | `Co-Authored-By: Oz <oz-agent@warp.dev>` → neutral co-author tag |
-| `tune-agent-assets` | 4 | `warp-tools agent assets` → `goose-tools agent assets`, `warp/workflows/scripts/` → `goose/workflows/scripts/` |
+| `tune-agent-assets` | 4 | `goose-tools agent assets` → `goose-tools agent assets`, `goose/workflows/scripts/` → `goose/workflows/scripts/` |
 | `update-deps` | 2 | `Co-Authored-By: Oz <oz-agent@warp.dev>` → neutral co-author tag |
 | `write-skill` | 1 | `~/.warp/` anti-pattern example → `~/.goose/` |
 
@@ -326,8 +326,8 @@ are covered by Phase 5 step 8 but are enumerated here for completeness:
 | Doc | Change |
 |---|---|
 | `README.md` | Full rewrite for Goose platform |
-| `docs/plan-execute-workflow.md` | Replace `oz_pw_*.sh` commands with `goose_pw_*.sh` |
-| `docs/operations.md` | Replace `bin/warp-tools` reference with `bin/goose-tools` |
+| `docs/plan-execute-workflow.md` | Replace `goose_pw_*.sh` commands with `goose_pw_*.sh` |
+| `docs/operations.md` | Replace `bin/goose-tools` reference with `bin/goose-tools` |
 | `docs/agent-profile-security.md` | Adapt for Goose permission modes (`GOOSE_MODE`) |
 | `docs/global-warp-rule.md` | Replace with `docs/goose-config-defaults.md` |
 | `docs/troubleshooting.md` | Update failure modes for Goose CLI |
@@ -345,7 +345,7 @@ are covered by Phase 5 step 8 but are enumerated here for completeness:
 | `goose/recipes/coder/recipe.yaml` | Coder agent recipe (discovered via `GOOSE_RECIPE_PATH`) |
 | `docs/goose-config-defaults.md` | Recommended `~/.config/goose/config.yaml` settings |
 | `docs/recipes.md` | Recipe authoring guide for goose-tools |
-| `deploy-goose-tools` skill | Goose-native equivalent of `deploy-warp-tools` |
+| `deploy-goose-tools` skill | Goose-native equivalent of `deploy-goose-tools` |
 | `goose-launcher` skill | Goose-native equivalent of `agent-launcher` |
 | `list-goose-models` skill | Goose-native equivalent of `list-warp-models` |
 
@@ -362,14 +362,14 @@ are covered by Phase 5 step 8 but are enumerated here for completeness:
 
 ### Phase 2 — State & Path Layer (Day 1–2)
 1. Update `utils/shell/paths.sh` — replace `~/.warp/` with `~/.goose/`
-2. Create `bin/goose-tools` — rename and adapt from `bin/warp-tools`
+2. Create `bin/goose-tools` — rename and adapt from `bin/goose-tools`
 3. Adapt all subcommands: `install`, `scaffold`, `update`, `doctor`, `slot`, `plan`
 4. Update bats tests for renamed paths and scripts
 
 ### Phase 3 — Workflow Scripts (Day 2–3)
 1. Create `goose/workflows/scripts/goose_pw_*.sh` (6 scripts)
-2. Replace `oz agent run` calls with `goose run --recipe`
-3. Replace `resolve_profile_id()` + `profiles.env` with `recipes.env` recipe path lookup (see §3.16)
+2. Replace `goose run --recipe` calls with `goose run --recipe`
+3. Replace `resolve_profile_id()` + `recipes.env` with `recipes.env` recipe path lookup (see §3.16)
 4. Replace `create_plan()` with `uuidgen` + direct markdown registry writes
 5. Adapt slot artifact verification logic
 
@@ -380,7 +380,7 @@ are covered by Phase 5 step 8 but are enumerated here for completeness:
 4. Verify `goose run --recipe planner` resolves correctly via `GOOSE_RECIPE_PATH`
 
 ### Phase 5 — Skills Adaptation (Day 4–5)
-1. Adapt `deploy-warp-tools` → `deploy-goose-tools`
+1. Adapt `deploy-goose-tools` → `deploy-goose-tools`
 2. Adapt `agent-launcher` → `goose-launcher`
 3. Adapt `list-warp-models` → `list-goose-models`
 4. Adapt `plan-workflow` → update paths and script names
@@ -411,10 +411,10 @@ are covered by Phase 5 step 8 but are enumerated here for completeness:
 | # | Decision | Resolution |
 |---|---|---|
 | D1 | Where does `goose-tools` live locally? | `/Volumes/secure/code/goose-tools` |
-| D2 | GitHub visibility? | Public (mirrors warp-tools policy) |
+| D2 | GitHub visibility? | Public (mirrors goose-tools policy) |
 | D3 | Plan ID generation without `create_plan()`? | `uuidgen` in shell |
 | D4 | Recipe discovery for end users? | `GOOSE_RECIPE_PATH` pointing at the local clone's `goose/recipes/` directory — see §3.16 |
-| D5 | Keep warp-tools alive in parallel? | Yes — separate repos, no cross-dependency |
+| D5 | Keep goose-tools alive in parallel? | Yes — separate repos, no cross-dependency |
 | D6 | `GOOSE_RECIPE_GITHUB_REPO` for recipe distribution? | **Resolved: not used.** `GOOSE_RECIPE_GITHUB_REPO` requires root-level recipe directories, incompatible with the plan's nested `goose/recipes/` layout. Not needed — goose-tools users always have a local clone. Use `GOOSE_RECIPE_PATH` instead (see §3.16). `bin/goose-tools install globals` writes this to `~/.zshenv` automatically. |
 
 ---

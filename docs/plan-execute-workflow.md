@@ -1,16 +1,16 @@
 # Plan → Execute Workflow — Operator Guide
 
-Full reference for the `Plan → Execute Workflow` Warp Drive Notebook.
+Full reference for the `Plan → Execute Workflow` Goose Desktop Notebook.
 For command reference see `docs/operations.md`. For failures see `docs/troubleshooting.md`.
 
 ## Overview
 
 The workflow loop: `(00 List) → 01 | 01b → 02 → 03 → 04 → 05 → 06 → (07 Archive)`
 
-Each step runs an interactive Oz session in the current terminal: `oz agent run` streams
+Each step runs an interactive Oz session in the current terminal: `goose run --recipe` streams
 the agent's output to your shell and returns control when the agent ends its turn. The
 script then verifies any required slot artifact and exits. Each step targets a **slot** —
-a named directory under `~/.warp/state/plan_workflow/<slot>/` holding the plan state.
+a named directory under `~/.goose/state/plan_workflow/<slot>/` holding the plan state.
 
 This workflow requires four named agent profiles: **Planner**, **Reviewer**, **Approver**,
 and **Coder**. For recommended permission and autonomy settings for each profile, see
@@ -23,10 +23,10 @@ table for the recommended open-model assignments.
 
 **Command:**
 ```bash
-awk '/^## Active Plans/,/^## Archived/' ~/warp-agent-plans.md
+awk '/^## Active Plans/,/^## Archived/' ~/goose-agent-plans.md
 ```
 
-**Expected output:** The Active Plans markdown table from `~/warp-agent-plans.md`.
+**Expected output:** The Active Plans markdown table from `~/goose-agent-plans.md`.
 
 **Placeholders:** None.
 
@@ -34,11 +34,11 @@ awk '/^## Active Plans/,/^## Archived/' ~/warp-agent-plans.md
 
 **Purpose:** Launch the Planner agent to create a new Warp plan and auto-pin the slot.
 
-**Prerequisites:** `bin/warp-tools install globals` has been run. Current directory is inside a git repo.
+**Prerequisites:** `bin/goose-tools install globals` has been run. Current directory is inside a git repo.
 
 **Command:**
 ```bash
-~/.warp/workflows/scripts/oz_pw_plan.sh {{slot}} "{{plan-title}}" "{{plan-spec}}"
+~/.goose/workflows/scripts/goose_pw_plan.sh {{slot}} "{{plan-title}}" "{{plan-spec}}"
 ```
 
 **Placeholders:**
@@ -49,19 +49,19 @@ awk '/^## Active Plans/,/^## Archived/' ~/warp-agent-plans.md
 **What the script does before launching:**
 1. Validates slot name format
 2. Checks for slot conflicts (fails if slot is already pinned to a different repo/plan)
-3. Sources `~/.warp/state/plan_workflow/profiles.env`
+3. Sources `~/.goose/state/plan_workflow/recipes.env`
 4. Writes `repo_root` and `plan_title` directly to the slot directory
 5. Builds the Planner prompt with the fully-resolved slot path
 
 **What the Planner agent does:**
 1. Calls `create_plan(title, markdown_content)` — captures `plan_id`
-2. Appends a row to `~/warp-agent-plans.md` Active Plans table
-3. Writes the `plan_id` to `~/.warp/state/plan_workflow/{{slot}}/plan_id`
+2. Appends a row to `~/goose-agent-plans.md` Active Plans table
+3. Writes the `plan_id` to `~/.goose/state/plan_workflow/{{slot}}/plan_id`
 4. Reports both operations completed with the plan_id
 
 **Expected output:** Planner agent runs interactively in the current terminal, reports plan created, registry row written, and slot pinned. On completion, the script verifies `plan_id` exists and exits.
 
-**Success indicator:** `~/.warp/state/plan_workflow/{{slot}}/plan_id` exists and contains a UUID.
+**Success indicator:** `~/.goose/state/plan_workflow/{{slot}}/plan_id` exists and contains a UUID.
 
 **If this fails:** See `docs/troubleshooting.md` → "Orphaned registry row" or "Slot conflict on pin".
 
@@ -69,11 +69,11 @@ awk '/^## Active Plans/,/^## Archived/' ~/warp-agent-plans.md
 
 **Purpose:** Pin an already-created active plan to a slot without launching an agent.
 
-**Prerequisites:** The plan_id appears in the Active Plans table of `~/warp-agent-plans.md`.
+**Prerequisites:** The plan_id appears in the Active Plans table of `~/goose-agent-plans.md`.
 
 **Command:**
 ```bash
-~/.warp/workflows/scripts/oz_pw_select.sh {{slot}} {{plan-id}}
+~/.goose/workflows/scripts/goose_pw_select.sh {{slot}} {{plan-id}}
 ```
 
 **Placeholders:**
@@ -96,20 +96,20 @@ pointer to Step 02.
 
 **Command:**
 ```bash
-~/.warp/workflows/scripts/oz_pw_review.sh {{slot}} reviewer
+~/.goose/workflows/scripts/goose_pw_review.sh {{slot}} reviewer
 ```
 
 **What the Reviewer does:**
 1. `read_plans` → loads current plan
 2. Multi-dimension analysis across Correctness, Completeness, Clarity, Consistency
 3. Section 0–6 report with `[Rx]` recommendations and `[Dx]` decisions (cross-referenced)
-4. Writes full report verbatim to `~/.warp/state/plan_workflow/{{slot}}/review_report.md`
+4. Writes full report verbatim to `~/.goose/state/plan_workflow/{{slot}}/review_report.md`
 
 **Agent conversation name:** `P02 Review — <plan_title>` (searchable in Conversation Panel)
 
 **Expected output:** Reviewer agent runs interactively in the current terminal and produces a full Section 0–6 report ending with a persistence confirmation. On completion, the script warns if `review_report.md` was not written.
 
-**Success indicator:** `~/.warp/state/plan_workflow/{{slot}}/review_report.md` exists and is non-empty.
+**Success indicator:** `~/.goose/state/plan_workflow/{{slot}}/review_report.md` exists and is non-empty.
 
 **If this fails:** See `docs/troubleshooting.md` → "Missing agent profile after machine change".
 
@@ -121,15 +121,15 @@ pointer to Step 02.
 
 **User actions before running Step 03:**
 
-1. Read `~/.warp/state/plan_workflow/{{slot}}/review_report.md` (or reopen the Step 02
+1. Read `~/.goose/state/plan_workflow/{{slot}}/review_report.md` (or reopen the Step 02
    Reviewer conversation from Warp's Conversation Panel — search `P02 Review — <plan-title>`).
-2. Answer `[Dx]` questions into `~/.warp/state/plan_workflow/{{slot}}/decisions.txt`:
+2. Answer `[Dx]` questions into `~/.goose/state/plan_workflow/{{slot}}/decisions.txt`:
    - **Manual:** Write `D1: <answer>`, `D2: <answer>`, ... (blank lines and `#` lines ignored)
    - **Assisted:** Ask an agent to extract the `[Dx]` lines and write them to the file
 
 **Command:**
 ```bash
-~/.warp/workflows/scripts/oz_pw_edit.sh {{slot}}
+~/.goose/workflows/scripts/goose_pw_edit.sh {{slot}}
 ```
 
 **What the Reviewer does:** Loads `review_report.md` and `decisions.txt` via `read_files`,
@@ -147,7 +147,7 @@ loads the plan via `read_plans`, applies all accepted `[Rx]` recommendations in 
 
 **Command:**
 ```bash
-~/.warp/workflows/scripts/oz_pw_review.sh {{slot}} approver
+~/.goose/workflows/scripts/goose_pw_review.sh {{slot}} approver
 ```
 
 **Agent conversation name:** `P04 Review — <plan_title>`
@@ -166,7 +166,7 @@ loads the plan via `read_plans`, applies all accepted `[Rx]` recommendations in 
 
 **Command:**
 ```bash
-~/.warp/workflows/scripts/oz_pw_finalize.sh {{slot}}
+~/.goose/workflows/scripts/goose_pw_finalize.sh {{slot}}
 ```
 
 **Expected output:** Approver agent runs interactively in the current terminal, applies final edits and confirms the plan is implementation-ready.
@@ -179,13 +179,13 @@ loads the plan via `read_plans`, applies all accepted `[Rx]` recommendations in 
 
 **Command:**
 ```bash
-~/.warp/workflows/scripts/oz_pw_execute.sh {{slot}} [fast]
+~/.goose/workflows/scripts/goose_pw_execute.sh {{slot}} [fast]
 ```
 
 **Optional `fast` flavor:** Pass `fast` as the second argument to use the `Coder (Fast)` profile
 (`${CODER_FAST_ID}`). The `Coder (Fast)` profile and `CODER_FAST_ID` must already exist in
-`profiles.env` (create the profile in Warp Settings → Agents → Profiles, then re-run
-`bin/warp-tools install globals`). If `fast` is requested but `CODER_FAST_ID` is not set,
+`recipes.env` (create the profile in Warp Settings → Agents → Profiles, then re-run
+`bin/goose-tools install globals`). If `fast` is requested but `CODER_FAST_ID` is not set,
 the script exits with an error.
 
 **Expected output:** Coder agent runs interactively in the current terminal, reads the plan, implements it, runs any checks, and reports what was done.
@@ -199,23 +199,23 @@ the script exits with an error.
 **Commands:**
 ```bash
 # Archive slot state (preferred — preserves files with original mtime)
-bin/warp-tools slot archive {{slot}}
+bin/goose-tools slot archive {{slot}}
 
 # Or clear the slot entirely
-bin/warp-tools slot clear {{slot}}
+bin/goose-tools slot clear {{slot}}
 ```
 
-Then move the registry row from Active to Archived in `~/warp-agent-plans.md` (use the
+Then move the registry row from Active to Archived in `~/goose-agent-plans.md` (use the
 `manage-plans` skill or edit manually).
 
 ---
 
 ## Notebook Sync
 
-The `Plan → Execute Workflow` Warp Drive notebook (`wXnnmpNmcsmOKwSwnMgUNv`) is sourced
+The `Plan → Execute Workflow` goose-tools operator guide (`wXnnmpNmcsmOKwSwnMgUNv`) is sourced
 from `warp/notebooks/plan-execute-workflow.md`. After editing the notebook source, you
-must manually re-import it in Warp Drive for the changes to take effect. See
-`docs/troubleshooting.md` → "Warp Drive Notebook Drift from Canonical Source".
+must manually re-import it in Goose Desktop for the changes to take effect. See
+`docs/troubleshooting.md` → "Goose Desktop Notebook Drift from Canonical Source".
 
 ---
 
@@ -225,10 +225,10 @@ Slot: `example-demo` | Plan title: `Add retry logic to pipeline`
 
 ```bash
 # Step 00: check active plans
-awk '/^## Active Plans/,/^## Archived/' ~/warp-agent-plans.md
+awk '/^## Active Plans/,/^## Archived/' ~/goose-agent-plans.md
 
 # Step 01: create and pin
-~/.warp/workflows/scripts/oz_pw_plan.sh \
+~/.goose/workflows/scripts/goose_pw_plan.sh \
   example-demo \
   "Add retry logic to pipeline" \
   "## Problem\nThe DLT import pipeline fails on transient network errors without retrying.\n## Solution\nAdd exponential backoff retry logic with configurable max attempts."
@@ -237,30 +237,30 @@ awk '/^## Active Plans/,/^## Archived/' ~/warp-agent-plans.md
 # => plan_id: e.g. a1b2c3d4-e5f6-7890-abcd-ef1234567890
 
 # Step 02: first review
-~/.warp/workflows/scripts/oz_pw_review.sh example-demo reviewer
+~/.goose/workflows/scripts/goose_pw_review.sh example-demo reviewer
 # [Reviewer produces Section 0-6 report, writes review_report.md]
 
 # Step 03: answer decisions, edit
 echo "D1: Use 3 retries with 2x backoff starting at 1s" \
-  > ~/.warp/state/plan_workflow/example-demo/decisions.txt
-~/.warp/workflows/scripts/oz_pw_edit.sh example-demo
+  > ~/.goose/state/plan_workflow/example-demo/decisions.txt
+~/.goose/workflows/scripts/goose_pw_edit.sh example-demo
 # [Reviewer applies edits]
 
 # Step 04: second review
-~/.warp/workflows/scripts/oz_pw_review.sh example-demo approver
+~/.goose/workflows/scripts/goose_pw_review.sh example-demo approver
 # [Approver overwrites review_report.md, recommends ship]
 
 # Step 05: finalize
-~/.warp/workflows/scripts/oz_pw_finalize.sh example-demo
+~/.goose/workflows/scripts/goose_pw_finalize.sh example-demo
 # [Approver confirms implementation-ready]
 
 # Step 06: execute
-~/.warp/workflows/scripts/oz_pw_execute.sh example-demo
+~/.goose/workflows/scripts/goose_pw_execute.sh example-demo
 # [Coder implements the plan]
 
 # Step 07: archive
-bin/warp-tools slot archive example-demo
-# Then move registry row to Archived in ~/warp-agent-plans.md
+bin/goose-tools slot archive example-demo
+# Then move registry row to Archived in ~/goose-agent-plans.md
 ```
 
 Last Updated: 2026.05.02 @ 23:29:08

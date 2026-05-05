@@ -1,6 +1,6 @@
-# Progressive Disclosure in warp-tools
+# Progressive Disclosure in goose-tools
 
-This document explains how `warp-tools` applies Progressive Disclosure (PD) to its
+This document explains how `goose-tools` applies Progressive Disclosure (PD) to its
 agent instruction files. It covers the loading model, the budget policy, the
 decision rubric for placing content, and governance. It is structural narrative only
 — all numeric thresholds live in the canonical PD rubric, and all measured status
@@ -13,7 +13,7 @@ lives in the compliance report.
 
 ## Three-Tier Loading Model
 
-Warp's Oz platform loads agent context in three tiers, each with a different cost
+the Goose platform loads agent context in three tiers, each with a different cost
 and scope:
 
 **Tier 1 — Always loaded (global rules and AGENTS.md).**
@@ -114,7 +114,7 @@ AGENTS.md line counts) are published in one place:
 - After changing the listing-cap budget or description ceiling in the rubric.
 
 **Regenerating INVENTORY.md:**
-Run `bin/warp-tools inventory` after any change to tracked `SKILL.md` files.
+Run `bin/goose-tools inventory` after any change to tracked `SKILL.md` files.
 The tool re-reads frontmatter and updates the embedded descriptions automatically.
 
 Last Updated: 2026.05.05 @ 00:55:00

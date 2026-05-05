@@ -54,7 +54,7 @@ All descriptions ≤500 chars. Ceiling per rubric: `len(description) > 500` is o
 | review-and-fix-pr | 466 | OK |
 | write-skill | 466 | OK |
 | refactor-agent-instructions | 457 | OK (trimmed) |
-| deploy-warp-tools | 441 | OK |
+| deploy-goose-tools | 441 | OK |
 | agent-launcher | 427 | OK |
 | scaffold-analysis-pipeline | 431 | OK (trimmed) |
 | review-plan | 421 | OK |
@@ -92,7 +92,7 @@ All descriptions ≤500 chars. Ceiling per rubric: `len(description) > 500` is o
 | add-new-module | 108 | module-template.md, timestamp-helpers.md | **PASS** |
 | agent-launcher | 133 | launcher-template.md, troubleshooting.md | **PASS** |
 | agent-quality-lint | 61 | 01_SUMMARY.md, 02_INTENT.md, 03_POLICIES.md, 04_PROCEDURE.md | **PASS** |
-| deploy-warp-tools | 147 | — | **PASS** |
+| deploy-goose-tools | 147 | — | **PASS** |
 | fix-class-complexity | 60 | — | **PASS** |
 | fix-class-inheritance | 64 | — | **PASS** |
 | fix-complexity | 56 | — | **PASS** |

@@ -1,6 +1,6 @@
 # Tests Directory Agent Rules
 ## Purpose
-Test suites for warp-tools. All tests must follow pytest conventions and project-wide testing standards.
+Test suites for goose-tools. All tests must follow pytest conventions and project-wide testing standards.
 
 → See .agents/skills/write-tests skill for examples and workflows
 

@@ -1,6 +1,6 @@
-# warp-tools Agent Rules
+# goose-tools Agent Rules
 ## Purpose
-`warp-tools` is the canonical portable agent toolchain for Warp's Oz platform. It
+`goose-tools` is the canonical portable agent toolchain for the Goose platform. It
 provides the Plan→Review→Edit→Review→Finalize→Execute workflow scripts, agent profile
 templates, and Warp Drive assets. The repo is evolving toward a monorepo structure that
 will also ship a portable slop code-quality kit (lint, report, remediation) and other
@@ -79,9 +79,9 @@ RULE: TEST_BEHAVIOR_NOT_IMPLEMENTATION
 - Tests MUST verify what code does (its observable behavior), not how it does it
 - If a refactor breaks tests but not the observable behavior, the tests were wrong
 - NEVER write tests that assert internal implementation details (private methods, call counts on internals)
-RULE: AGENT_PROFILE_MODELS
-- Profile → Model mapping lives in `docs/agent-profile-security.md` — single source of truth; never inline.
-- Open-model defaults are starter-stack defaults from the open-model pool. No Auto routing. No proprietary closed models.
+RULE: GOOSE_MODEL_CONFIG
+- Model configuration lives in ~/.config/goose/config.yaml — single source of truth; never inline.
+- Configure goose_provider and goose_model in config.yaml. See docs/goose-config-defaults.md.
 ## Skills and Docs
 
 Task-specific workflows live in `.agents/skills/` — browse the directory for all available skills.

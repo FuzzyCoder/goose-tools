@@ -1,6 +1,6 @@
 # Shell Compatibility
 
-All `oz_pw_*.sh` scripts and `bin/warp-tools` must run identically under:
+All `goose_pw_*.sh` scripts and `bin/goose-tools` must run identically under:
 - **bash 4.0+** (macOS Homebrew bash 5+, Linux distro bash 4.0+)
 - **zsh 5.0+** (macOS system zsh 5.9, Linux distro zsh 5.0+)
 
@@ -11,7 +11,7 @@ so that CI can also run them explicitly under `zsh` for compatibility validation
 
 ## Forbidden Constructs
 
-The following constructs are NOT allowed in any `oz_pw_*.sh` or `bin/warp-tools` script,
+The following constructs are NOT allowed in any `goose_pw_*.sh` or `bin/goose-tools` script,
 because they are either bash-only or zsh-only and would break compatibility:
 
 ### Associative Arrays
@@ -112,7 +112,7 @@ trimmed="$(printf '%s' "$str" | sed 's/^ *//;s/ *$//')"  # NOT ${str# } or ${str
 ```bash
 resolve_profile_id() {
   local name="$1"
-  oz agent profile list 2>/dev/null \
+  goose recipe list 2>/dev/null \
     | awk -F'┆' -v n="$name" '$2 ~ "^[[:space:]]*" n { gsub(/[^a-zA-Z0-9]/, "", $1); print $1 }' \
     | head -1
 }
@@ -142,11 +142,11 @@ bash tests/shell_compat/run_compat.sh
 zsh  tests/shell_compat/run_compat.sh
 
 # Run the negative rule test under both interpreters
-bash tests/test_oz_pw_plan_negative_rule.sh
-zsh  tests/test_oz_pw_plan_negative_rule.sh
+bash tests/test_goose_pw_plan_negative_rule.sh
+zsh  tests/test_goose_pw_plan_negative_rule.sh
 
 # Run via doctor (includes self-test)
-bin/warp-tools doctor --self-test
+bin/goose-tools doctor --self-test
 ```
 
 Last Updated: 2026.04.24 @ 21:54:03

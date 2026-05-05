@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This directory contains utility functions, helpers, and common operations used across warp-tools.
+This directory contains utility functions, helpers, and common operations used across goose-tools.
 
 RULE: UTILS_PURE_FUNCTIONS
 - ALWAYS make utility functions pure (no side effects) when possible

@@ -113,7 +113,7 @@ DROP DATABASE
 ```
 
 **Directory allowlist** — project root and subdirectories. Read-only access to
-`~/.warp/state/plan_workflow/` is acceptable for plan-workflow integration.
+`~/.goose/state/plan_workflow/` is acceptable for plan-workflow integration.
 
 ---
 
@@ -210,7 +210,7 @@ from accidentally reading or writing outside its intended scope:
 
 ```
 /path/to/your/project/        # project root
-~/.warp/state/plan_workflow/  # plan-workflow slot state (read-only is sufficient)
+~/.goose/state/plan_workflow/  # plan-workflow slot state (read-only is sufficient)
 ~/.agents/skills/             # skill files (read-only for most profiles)
 ```
 
