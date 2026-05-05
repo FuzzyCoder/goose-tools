@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2016  # backticks in printf strings are markdown, not subshells
 # Inventory subcommand for goose-tools.
 #
 # Usage: bin/goose-tools inventory [--json]
@@ -118,7 +119,6 @@ _inventory_entry_markdown() {
   ts="$(date -r "$mtime" '+%Y-%m-%d %H:%M' 2>/dev/null || date -d "@${mtime}" '+%Y-%m-%d %H:%M' 2>/dev/null || printf '?')"
   local tracked=""
   git -C "$repo_root" ls-files --error-unmatch "$rel" >/dev/null 2>&1 || tracked=" [untracked]"
-  # shellcheck disable=SC2016
   printf '  - `%s` (%s bytes, %s lines, %s)%s\n' "$rel" "$size" "$lines" "$ts" "$tracked"
 }
 
@@ -187,7 +187,9 @@ _inventory_render_skills() {
   local skills_dir="$scratch/skills"
   [ -d "$skills_dir" ] || return 0
   printf '## Skills\n'
-  printf 'Portable agent skills under `.agents/skills/`.\n\n'
+  printf 'Portable agent skills under .agents/skills/.
+
+'
   local skill_dir skill_name desc subgroup sg_file rel skill_md_path
   while IFS= read -r skill_dir; do
     skill_name="${skill_dir##*/}"
@@ -224,7 +226,7 @@ _inventory_render_markdown() {
   _inventory_render_section "$scratch" "$repo_root" 'project_root' 'Project Root' \
     'Root-level configuration, licensing, and dependency management.'
   _inventory_render_section "$scratch" "$repo_root" 'documentation' 'Documentation' \
-    'Operator guides, reference docs, and workflow documentation in `docs/`.'
+    'Operator guides, reference docs, and workflow documentation in docs/.'
   _inventory_render_section "$scratch" "$repo_root" 'cli_scripts' 'CLI & Scripts' \
     'The `bin/goose-tools` CLI entry point and its `bin/commands/` subcommand modules.'
   _inventory_render_section "$scratch" "$repo_root" 'warp_drive_assets' 'Warp Drive Assets' \

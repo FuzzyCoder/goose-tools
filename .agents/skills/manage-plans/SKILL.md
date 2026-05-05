@@ -93,15 +93,15 @@ Always use `direct file read` to reload a plan — never re-create it. Re-creati
 
 Use the `Plan → Execute Workflow` goose-tools operator guide (from `goose-tools`) for guided review:
 
-- **Step 02 (first review)**: `~/.warp/workflows/scripts/goose_pw_review.sh <SLOT> reviewer`
-- **Step 04 (second review/approval)**: `~/.warp/workflows/scripts/goose_pw_review.sh <SLOT> approver`
+- **Step 02 (first review)**: `~/.goose/workflows/scripts/goose_pw_review.sh <SLOT> reviewer`
+- **Step 04 (second review/approval)**: `~/.goose/workflows/scripts/goose_pw_review.sh <SLOT> approver`
 
 Both commands require the slot to be pinned (via `goose_pw_plan.sh` or `goose_pw_select.sh`). They launch
 the Reviewer or Approver profile with a standardized Section 0–6 review prompt. The review agent
 writes its full report to `~/.goose/state/plan_workflow/<SLOT>/review_report.md` before ending its
 turn — this file is the handoff for the edit/finalize steps.
 
-- **Dry-run validation**: `DRY_RUN=1 ~/.warp/workflows/scripts/goose_pw_review.sh <SLOT> reviewer`
+- **Dry-run validation**: `DRY_RUN=1 ~/.goose/workflows/scripts/goose_pw_review.sh <SLOT> reviewer`
 - **Command Palette**: `PW - 02/04 Review Plan` (installed by `bin/goose-tools install globals`)
 
 When the user wants to review a plan without the full workflow:

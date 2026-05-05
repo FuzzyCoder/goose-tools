@@ -12,7 +12,7 @@
 Every `goose_pw_*.sh` script supports `DRY_RUN=1`:
 
 ```bash
-DRY_RUN=1 ~/.warp/workflows/scripts/goose_pw_plan.sh <slot> "<title>" "<spec>"
+DRY_RUN=1 ~/.goose/workflows/scripts/goose_pw_plan.sh <slot> "<title>" "<spec>"
 ```
 
 Prints the resolved `--profile`, `--name`, `--cwd`, `--prompt`, and `--input` that WOULD be

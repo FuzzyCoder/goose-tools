@@ -166,7 +166,7 @@ gh_api() {
     -H "Accept: application/vnd.github+json" \
     "${url}" 2>/dev/null)"
 
-  if [ $? -ne 0 ] || [ -z "$response" ]; then
+  if [ -z "$response" ]; then
     log_err "gh_api: request failed: ${url}"
     return 1
   fi
@@ -242,7 +242,7 @@ gh_search_issues() {
     -H "Accept: application/vnd.github+json" \
     "${GITHUB_API_BASE}/search/issues?q=${encoded_query}&per_page=${limit}" 2>/dev/null)"
 
-  if [ $? -ne 0 ] || [ -z "$response" ]; then
+  if [ -z "$response" ]; then
     log_err "gh_search_issues: search request failed for query: ${query} repo: ${canonical}"
     return 1
   fi

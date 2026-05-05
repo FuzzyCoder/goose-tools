@@ -7,7 +7,7 @@
 # Assertions:
 #   (a) Composed Planner prompt contains the phrase "plan_id" in context of writing
 #       to the slot path (i.e., the agent is instructed to write the plan_id file).
-#   (b) Script source does NOT contain tail or awk access to ~/warp-agent-plans.md
+#   (b) Script source does NOT contain tail or awk access to ~/goose-agent-plans.md
 #       (the script must not scrape the registry to get plan_id after agent exits).
 #   (c) Composed Planner prompt does NOT instruct the agent to write repo_root or plan_title
 #       (those are written by the script directly, not delegated to the agent).
@@ -107,28 +107,28 @@ else
 fi
 
 #------------------------------------------------------------------------------
-# Assertion (b): script source does NOT contain tail/awk scraping warp-agent-plans.md
+# Assertion (b): script source does NOT contain tail/awk scraping goose-agent-plans.md
 #------------------------------------------------------------------------------
-printf '\n(b) Script source does not scrape warp-agent-plans.md for plan_id...\n'
+printf '\n(b) Script source does not scrape goose-agent-plans.md for plan_id...\n'
 SCRIPT_SOURCE="$(cat "${PLAN_SCRIPT}")"
 
-# Check for tail | awk or awk ... | tail patterns accessing warp-agent-plans.md
+# Check for tail | awk or awk ... | tail patterns accessing goose-agent-plans.md
 SCRAPING_PATTERN=0
-if printf '%s' "$SCRIPT_SOURCE" | grep -qE '(tail|awk).*(warp-agent-plans|plans\.md)'; then
+if printf '%s' "$SCRIPT_SOURCE" | grep -qE '(tail|awk).*(goose-agent-plans|plans\.md)'; then
   SCRAPING_PATTERN=1
 fi
-if printf '%s' "$SCRIPT_SOURCE" | grep -qE '(warp-agent-plans|plans\.md).*(tail|awk)'; then
+if printf '%s' "$SCRIPT_SOURCE" | grep -qE '(goose-agent-plans|plans\.md).*(tail|awk)'; then
   SCRAPING_PATTERN=1
 fi
-# Also check for any read of warp-agent-plans.md by the script itself
-if printf '%s' "$SCRIPT_SOURCE" | grep -qE 'cat.*warp-agent-plans' ; then
+# Also check for any read of goose-agent-plans.md by the script itself
+if printf '%s' "$SCRIPT_SOURCE" | grep -qE 'cat.*goose-agent-plans' ; then
   SCRAPING_PATTERN=1
 fi
 
 if [ "$SCRAPING_PATTERN" = "0" ]; then
-  assert_pass "(b) script does not scrape warp-agent-plans.md"
+  assert_pass "(b) script does not scrape goose-agent-plans.md"
 else
-  assert_fail "(b) script source contains scraping of warp-agent-plans.md — violates negative rule"
+  assert_fail "(b) script source contains scraping of goose-agent-plans.md — violates negative rule"
 fi
 
 #------------------------------------------------------------------------------

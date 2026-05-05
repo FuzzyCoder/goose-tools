@@ -26,7 +26,7 @@ Optional — run before Step 01 to check whether to create a new plan or resume 
 ## Step 01 — Create + Pin New Plan
 
 ```bash
-~/.warp/workflows/scripts/goose_pw_plan.sh <slot> "<plan-title>" "<plan-spec>"
+~/.goose/workflows/scripts/goose_pw_plan.sh <slot> "<plan-title>" "<plan-spec>"
 ```
 
 **Slot name rules:** lowercase alnum+hyphens, 1–32 chars, no leading hyphen.
@@ -40,14 +40,14 @@ Recommended naming: `<repo-short>-<purpose>` (e.g. `duckhouse-cleanup`).
    - Writes `plan_id` UUID to `~/.goose/state/plan_workflow/<slot>/plan_id`
 3. On completion, the script verifies `plan_id` was written and exits. Slot is pinned; proceed to Step 02.
 
-**Dry-run:** `DRY_RUN=1 ~/.warp/workflows/scripts/goose_pw_plan.sh <slot> "..." "..."` — prints the resolved prompt and exits 0.
+**Dry-run:** `DRY_RUN=1 ~/.goose/workflows/scripts/goose_pw_plan.sh <slot> "..." "..."` — prints the resolved prompt and exits 0.
 
 ---
 
 ## Step 01b — Pin Existing Plan
 
 ```bash
-~/.warp/workflows/scripts/goose_pw_select.sh <slot> <plan-id>
+~/.goose/workflows/scripts/goose_pw_select.sh <slot> <plan-id>
 ```
 
 Use when resuming an already-created active plan. Validates UUID, confirms the plan
@@ -59,7 +59,7 @@ files (`plan_id`, `plan_title`, `repo_root`). No agent is launched.
 ## Step 02 — First Review (Reviewer)
 
 ```bash
-~/.warp/workflows/scripts/goose_pw_review.sh <slot> reviewer
+~/.goose/workflows/scripts/goose_pw_review.sh <slot> reviewer
 ```
 
 The Reviewer agent:
@@ -88,7 +88,7 @@ EOF
 Missing `decisions.txt` is valid — the agent proceeds without user overrides.
 
 ```bash
-~/.warp/workflows/scripts/goose_pw_edit.sh <slot>
+~/.goose/workflows/scripts/goose_pw_edit.sh <slot>
 ```
 
 The Reviewer reads `review_report.md` + `decisions.txt` via `read_files`, loads the
@@ -102,7 +102,7 @@ current plan via `direct file read`, and applies all accepted `[Rx]` items in a 
 ## Step 04 — Second Review (Approver)
 
 ```bash
-~/.warp/workflows/scripts/goose_pw_review.sh <slot> approver
+~/.goose/workflows/scripts/goose_pw_review.sh <slot> approver
 ```
 
 Same as Step 02 but uses the Approver profile. **Overwrites `review_report.md`** with
@@ -117,7 +117,7 @@ Agent conversation name: `P04 Review — <plan_title>`.
 Update `decisions.txt` only if the Approver raised new `[Dx]` items, then:
 
 ```bash
-~/.warp/workflows/scripts/goose_pw_finalize.sh <slot>
+~/.goose/workflows/scripts/goose_pw_finalize.sh <slot>
 ```
 
 Approver applies its recommendations in a single `direct file write` call and confirms the
@@ -129,7 +129,7 @@ distinction that preserves the review→edit symmetry.
 ## Step 06 — Execute
 
 ```bash
-~/.warp/workflows/scripts/goose_pw_execute.sh <slot>
+~/.goose/workflows/scripts/goose_pw_execute.sh <slot>
 ```
 
 Coder reads the plan and implements it fully. Validates that the current git repo matches

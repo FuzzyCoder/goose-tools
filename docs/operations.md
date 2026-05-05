@@ -55,7 +55,7 @@ bin/goose-tools --force install globals
 - `~/.agents/skills/<skill>/` — all portable skills from `.agents/skills/`, including
   `review-pr`, `review-and-fix-pr`, `fix-issue`, and `update-deps`
 - `~/.goose/state/plan_workflow/recipes.env` — resolved agent profile IDs
-- `~/.warp/state/goose-tools-manifest.json` — ownership manifest with SHA-256 hashes
+- `~/.goose/state/goose-tools-manifest.json` — ownership manifest with SHA-256 hashes
 
 **Profile resolution:** Queries `goose recipe list` at install time for profiles named
 `Planner`, `Reviewer`, `Approver`, and `Coder`. Fails loudly if any are missing (exit 3).

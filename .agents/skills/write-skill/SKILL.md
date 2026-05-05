@@ -99,7 +99,7 @@ One Gotcha per failure mode. Format: `**Bold trigger** — consequence + correct
 ## Portability Rules
 
 Skills in this repo are used across projects. Never embed:
-- Absolute machine paths (`/Volumes/secure/`, `~/.warp/`)
+- Absolute machine paths (`/Volumes/secure/`, `~/.goose/`)
 - Repo-local script references not shipped with the skill
 - Project-domain nouns (product names, service names)
 

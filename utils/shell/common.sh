@@ -47,7 +47,7 @@ skill_has_drift() {
   local src_dir="$1" dst_dir="$2"
   local f rel dst_file src_sha dst_sha
   while IFS= read -r f; do
-    rel="${f#${src_dir}/}"
+    rel="${f#"${src_dir}"/}"
     dst_file="${dst_dir}/${rel}"
     if [ ! -f "$dst_file" ]; then
       return 0  # file present in source but missing in dest = drift

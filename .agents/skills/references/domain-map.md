@@ -31,7 +31,7 @@ example prompts, and gap-text entries. Not bound by the SKILL.md 200-line limit.
 ## Plan & Review Workflow
 
 **Skills:**
-- `plan-workflow` — drive Plan→Review→Edit→Review→Finalize→Execute via slot scripts (`oz_pw_*.sh`)
+- `plan-workflow` — drive Plan→Review→Edit→Review→Finalize→Execute via slot scripts (`goose_pw_*.sh`)
 - `manage-plans` — create/register/retrieve Warp plans with persistent `plan_id` tracking
 - `review-plan` — multi-dimension review (Correctness/Completeness/Clarity/Consistency)
 - `review-pr` — read-only dimensional PR review (correctness+tests, security+design)
